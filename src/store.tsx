@@ -4,8 +4,6 @@ type VirusParticle = { id_str: string };
 
 type GlobalStateType = {
   isZoomed: boolean;
-  /** mute the music */
-  isSoundOn: boolean;
   isSpinning: boolean;
   isScrollable: boolean;
   /** is the game paused / temperature === 0 */
@@ -23,11 +21,6 @@ export function getSettingsFromLS() {
   return JSON.parse(settings || "");
 }
 
-const initialIsSoundOn = (() => {
-  const settings = getSettingsFromLS();
-  return settings && "isSoundOn" in settings ? settings.isSoundOn : true;
-})();
-
 // zustand https://github.com/pmndrs/zustand
 // with typescript https://react-tracked.js.org/docs/tutorial-zustand-01/
 export const useStore = create<GlobalStateType>(
@@ -36,7 +29,6 @@ export const useStore = create<GlobalStateType>(
     isScrollable: false,
     paused: false,
     isZoomed: false,
-    isSoundOn: initialIsSoundOn,
     isPropertyAnimating: false,
     scrollTopPct: 0,
     viruses: [],
