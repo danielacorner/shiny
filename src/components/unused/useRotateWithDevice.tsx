@@ -4,6 +4,7 @@ import { Html } from "@react-three/drei";
 import { useStore } from "../../store";
 import { useFrame } from "react-three-fiber";
 import * as THREE from "three";
+import { degToRad } from "three";
 
 export function useRotateWithDevice() {
   const ref = useRef(null as any);
@@ -18,15 +19,15 @@ export function useRotateWithDevice() {
   });
 
   // Z
-  const alpha = THREE.Math.degToRad(dOrient.alpha);
+  const alpha = degToRad(Number(dOrient.alpha));
 
   // X'
-  const beta = THREE.Math.degToRad(dOrient.beta);
+  const beta = degToRad(Number(dOrient.beta));
 
   // Y''
-  const gamma = THREE.Math.degToRad(dOrient.gamma);
+  const gamma = degToRad(Number(dOrient.gamma));
 
-  const w = THREE.Math.degToRad(-90);
+  const w = degToRad(-90);
 
   // const { x, y, z } = Quat2Angle(alpha, beta, gamma, w);
   const [x, y, z] = [-beta, 0, alpha];

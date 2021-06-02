@@ -8,7 +8,7 @@ import { useAddShadowsToGltf } from "./useAddShadowsToGltf";
 
 export default function Model(props) {
   const group = useRef(null as any);
-  const { nodes, materials } = useGLTF("/models/D20_star_draco.glb");
+  const { nodes } = useGLTF("/models/D20_star_draco.glb") as any;
   useAddShadowsToGltf(group);
   return (
     <group {...props} dispose={null}>

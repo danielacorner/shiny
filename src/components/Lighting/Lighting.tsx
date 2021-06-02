@@ -1,11 +1,9 @@
-import { Box, GizmoHelper, GizmoViewcube } from "@react-three/drei";
+import { Box } from "@react-three/drei";
 import React, { useRef } from "react";
 import { useFrame, useThree } from "react-three-fiber";
-import { useControl } from "react-three-gui";
-import { useAnimationStep } from "./CanvasAndScene/useAnimationStep";
+import { useAnimationStep } from "../CanvasAndScene/useAnimationStep";
 import { useSpring, animated } from "@react-spring/three";
-import { useStore } from "../store";
-import { useMount } from "../utils/hooks";
+import { useStore } from "../../store";
 
 export function Lighting() {
   return (
@@ -80,10 +78,9 @@ function LightFollowsMouse() {
     spotlight2Intensity: isD20Active ? 400 : 0,
     pointlightIntensity: !isZoomed ? 3 : 6,
   });
-  const z = useControl("z", { type: "number", min: -10, max: 5, value: 0 });
   return (
     <>
-      <RGBLights />
+      {/* <RGBLights /> */}
       <animated.pointLight
         ref={light} /* this one follows the mouse */
         decay={0}
@@ -98,48 +95,17 @@ function LightFollowsMouse() {
         castShadow={true}
         color="white"
       />
-      <mesh depthTest={true}>
-        {process.env.NODE_ENV === "development" && <Box ref={box} />}
-        {process.env.NODE_ENV === "development" && (
-          <Box position={spotlightBox} />
-        )}
-      </mesh>
+      {process.env.NODE_ENV === "development" && (
+        <>
+          <Box ref={box} />
+          <Box position={spotlightBox.current?.position} />
+        </>
+      )}
       <animated.pointLight
         intensity={springProps.spotlight2Intensity}
         position={[-1, 2.5, 9]}
         castShadow={true}
         color="whitesmoke"
-      />
-    </>
-  );
-}
-
-function RGBLights() {
-  return (
-    <>
-      <pointLight
-        decay={0}
-        distance={0}
-        intensity={1}
-        color="lightblue"
-        castShadow={true}
-        position={[-2, -8, 5]}
-      />
-      <pointLight
-        decay={0}
-        distance={0}
-        intensity={3}
-        color="red"
-        castShadow={true}
-        position={[1, 8, -5]}
-      />
-      <pointLight
-        decay={0}
-        distance={0}
-        intensity={2}
-        color="limegreen"
-        castShadow={true}
-        position={[3, -8, -6]}
       />
     </>
   );

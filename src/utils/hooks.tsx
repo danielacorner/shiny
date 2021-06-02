@@ -1,9 +1,5 @@
 import { useState, useEffect, useRef, EffectCallback } from "react";
 
-function getIsSSR() {
-  return typeof window === "undefined";
-}
-
 // https://hooks-guide.netlify.app/rehooks/useDeviceOrientation
 export function useDeviceOrientation() {
   const [deviceOrientation, setDeviceOrientation] = useState({
@@ -34,19 +30,14 @@ export function useDeviceOrientation() {
 }
 
 export function useWindowSize() {
-  const isSSR = getIsSSR();
-
   // (For SSR apps only?) Initialize state with undefined width/height so server and client renders match
   // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
   const [windowSize, setWindowSize] = useState({
-    width: undefined,
-    height: undefined,
+    width: 0,
+    height: 0,
   });
 
   useMount(() => {
-    if (isSSR) {
-      return;
-    }
     // Handler to call on window resize
     function handleResize() {
       // Set window width/height to state
@@ -138,9 +129,7 @@ export function useEventListener(
   useEffect(
     () => {
       // Make sure element supports addEventListener
-      // On
-      const isSupported = element?.addEventListener;
-      if (!isSupported) {
+      if (!element || !element?.addEventListener) {
         return;
       }
 

@@ -19,11 +19,8 @@ type GlobalStateType = {
 };
 
 export function getSettingsFromLS() {
-  if (typeof window === "undefined") {
-    return;
-  }
   const settings = window.localStorage.getItem("settings");
-  return JSON.parse(settings);
+  return JSON.parse(settings || "");
 }
 
 const initialIsSoundOn = (() => {

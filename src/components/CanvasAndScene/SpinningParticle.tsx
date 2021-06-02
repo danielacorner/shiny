@@ -5,7 +5,6 @@ import { useStore } from "../../store";
 import { useMount } from "../../utils/hooks";
 import * as THREE from "three";
 import D20_STAR from "../GLTFs/D20_star";
-import D20 from "../GLTFs/D20";
 import { useControl } from "react-three-gui";
 import { useAnimationStep } from "./useAnimationStep";
 
@@ -24,14 +23,14 @@ const COMMON_MATERIAL_PROPS = {
   reflectivity: 1,
 };
 
-const degToRad = THREE.Math.degToRad;
-const radToDeg = THREE.Math.radToDeg;
+const degToRad = (THREE as any).Math.degToRad;
+// const radToDeg = (THREE as any).Math.radToDeg;
 
-const D20_ROTATION = {
-  x: degToRad(-0.87),
-  y: degToRad(57.6),
-  z: degToRad(54.8),
-};
+// const D20_ROTATION = {
+//   x: degToRad(-0.87),
+//   y: degToRad(57.6),
+//   z: degToRad(54.8),
+// };
 const D20_STAR_ROTATION = {
   x: degToRad(69.03),
   y: degToRad(-0.02),
@@ -77,24 +76,24 @@ export default function SpinningParticle() {
   const ref4 = useRef(null as any);
   const ref5 = useRef(null as any);
 
-  const x = useControl("rotx", {
-    type: "number",
-    value: 69.03,
-    min: 0,
-    max: 360,
-  });
-  const y = useControl("roty", {
-    type: "number",
-    value: -0.02,
-    min: 0,
-    max: 360,
-  });
-  const z = useControl("rotz", {
-    type: "number",
-    value: -0.2,
-    min: 0,
-    max: 360,
-  });
+  // const x = useControl("rotx", {
+  //   type: "number",
+  //   value: 69.03,
+  //   min: 0,
+  //   max: 360,
+  // });
+  // const y = useControl("roty", {
+  //   type: "number",
+  //   value: -0.02,
+  //   min: 0,
+  //   max: 360,
+  // });
+  // const z = useControl("rotz", {
+  //   type: "number",
+  //   value: -0.2,
+  //   min: 0,
+  //   max: 360,
+  // });
 
   const isZoomed = useStore((s) => s.isZoomed);
 
@@ -132,7 +131,7 @@ export default function SpinningParticle() {
   const set = useStore((s) => s.set);
   useEffect(() => {
     set({ isSpinning: !isZoomed });
-  }, [isZoomed]);
+  }, [set, isZoomed]);
 
   const scale = isZoomed ? 4.5 : mounted ? 1 : 0;
 
@@ -161,12 +160,12 @@ export default function SpinningParticle() {
     },
   });
 
-  const d20Scale = 0.08;
+  // const d20Scale = 0.08;
   const d20StarScale = 0.055;
 
   return (
     <animated.mesh
-      scale={springProps.scale}
+      scale={springProps.scale as any}
       onClick={handleZoomIn}
       onPointerDown={handleZoomIn}
     >
@@ -189,7 +188,7 @@ export default function SpinningParticle() {
         />
       </mesh>
       {/* icosahedron + D20 */}
-      <mesh ref={ref3} depthTest={true}>
+      <mesh ref={ref3}>
         <mesh>
           <icosahedronBufferGeometry args={[scalePct * 1, 0]} />
           <animated.meshPhysicalMaterial
@@ -197,8 +196,6 @@ export default function SpinningParticle() {
             opacity={springProps.opacityIcosahedron}
             roughness={springProps.roughness}
             metalness={0.9}
-            receiveShadow={true}
-            castShadow={true}
           />
         </mesh>
         {/* TODO: need to fade in a non-transparent one too when isD20Active??? */}
@@ -235,7 +232,6 @@ export default function SpinningParticle() {
             {...COMMON_MATERIAL_PROPS}
             transparent={!isD20Active}
             depthTest={isD20Active}
-            castShadow={true}
             depthWrite={true}
             opacity={springProps.opacityD20}
             metalness={springProps.metalnessD20}
@@ -250,7 +246,6 @@ export default function SpinningParticle() {
         <icosahedronBufferGeometry args={[scalePct * 4, 1]} />
         <meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
-          renderOrder={3}
           color="tomato"
           wireframe={isWireframe}
           opacity={isWireframe ? 0.05 : 0.08}
@@ -261,7 +256,6 @@ export default function SpinningParticle() {
         <icosahedronBufferGeometry args={[scalePct * 14, 2]} />
         <meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
-          renderOrder={0}
           opacity={isWireframe ? 0.03 : 0.04}
           wireframe={true}
           depthTest={isZoomed}

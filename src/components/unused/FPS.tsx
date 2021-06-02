@@ -4,7 +4,7 @@ import throttle from "lodash.throttle";
 import { Html } from "@react-three/drei";
 
 export default function Fps() {
-  let ref = useRef(null);
+  let ref = useRef(null as any);
   let last = Date.now();
   const fn = useMemo(
     () =>

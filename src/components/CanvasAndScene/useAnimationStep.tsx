@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useStore } from "../../store";
 import { useLocalStorageState } from "../../utils/hooks";
 
@@ -15,7 +15,7 @@ export function useAnimationStep() {
 
   useEffect(() => {
     setAnimationStep(Math.round(scrollTopPct * NUM_STEPS));
-  }, [scrollTopPct]);
+  }, [scrollTopPct, setAnimationStep]);
 
   return animationStep;
 }

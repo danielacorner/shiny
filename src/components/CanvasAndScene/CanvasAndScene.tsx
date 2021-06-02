@@ -3,18 +3,17 @@ import { useWindowSize, useInterval } from "../../utils/hooks";
 import * as THREE from "three";
 import {
   Environment,
-  OrbitControls,
   Sky,
   Stars,
   Stats,
   useDetectGPU,
 } from "@react-three/drei";
-import { Lighting } from "../Lighting";
+import { Lighting } from "../Lighting/Lighting";
 import { Physics } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
 import SpinScene from "../SpinScene";
 import SpinningParticle from "./SpinningParticle";
-import { Controls, useControl } from "react-three-gui";
+import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
 
 export default function CanvasAndScene() {
@@ -54,29 +53,30 @@ export default function CanvasAndScene() {
 }
 
 function Scene() {
-  // useDetectGPU();
+  const tier = useDetectGPU();
+  console.log("🌟🚨 ~ Scene ~ tier", tier);
 
   const turbidity = useGetTurbidityByTimeOfDay();
   return (
-    // <Physics {...PHYSICS_PROPS}>
-    <>
-      {process.env.NODE_ENV === "development" ? (
-        // <OrbitControls />
-        <DeviceOrientationOrbitControls />
-      ) : (
-        <DeviceOrientationOrbitControls />
-      )}
-      <Stars count={1000} />
-      <Environment background={false} path={"/"} preset={"night"} />
-      <Sky
-        rayleigh={7}
-        mieCoefficient={0.1}
-        mieDirectionalG={1}
-        turbidity={turbidity}
-      />
-      <SpinningParticle />
-    </>
-    // </Physics>
+    <Physics {...PHYSICS_PROPS}>
+      <>
+        {process.env.NODE_ENV === "development" ? (
+          // <OrbitControls />
+          <DeviceOrientationOrbitControls />
+        ) : (
+          <DeviceOrientationOrbitControls />
+        )}
+        <Stars count={1000} />
+        <Environment background={false} path={"/"} preset={"night"} />
+        <Sky
+          rayleigh={7}
+          mieCoefficient={0.1}
+          mieDirectionalG={1}
+          turbidity={turbidity}
+        />
+        <SpinningParticle />
+      </>
+    </Physics>
   );
 }
 
