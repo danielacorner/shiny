@@ -1,13 +1,7 @@
 import React, { Suspense, useState } from "react";
 import { useWindowSize, useInterval } from "../../utils/hooks";
 import * as THREE from "three";
-import {
-  Environment,
-  Sky,
-  Stars,
-  Stats,
-  useDetectGPU,
-} from "@react-three/drei";
+import { Environment, Sky, Stars, Stats } from "@react-three/drei";
 import { Lighting } from "../Lighting/Lighting";
 import { Physics } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
@@ -53,9 +47,6 @@ export default function CanvasAndScene() {
 }
 
 function Scene() {
-  const tier = useDetectGPU();
-  console.log("🌟🚨 ~ Scene ~ tier", tier);
-
   const turbidity = useGetTurbidityByTimeOfDay();
   return (
     <Physics {...PHYSICS_PROPS}>

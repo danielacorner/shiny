@@ -1,7 +1,5 @@
 import create from "zustand";
 
-type VirusParticle = { id_str: string };
-
 type GlobalStateType = {
   isZoomed: boolean;
   isSpinning: boolean;
@@ -11,15 +9,8 @@ type GlobalStateType = {
   /** if a property in the store is animating e.g. scale, can turn things on/off */
   isPropertyAnimating: boolean;
   scrollTopPct: number;
-  viruses: VirusParticle[];
-  createVirus: (newVir: VirusParticle) => any;
   set: (newState: any) => any;
 };
-
-export function getSettingsFromLS() {
-  const settings = window.localStorage.getItem("settings");
-  return JSON.parse(settings || "");
-}
 
 // zustand https://github.com/pmndrs/zustand
 // with typescript https://react-tracked.js.org/docs/tutorial-zustand-01/
@@ -31,9 +22,6 @@ export const useStore = create<GlobalStateType>(
     isZoomed: false,
     isPropertyAnimating: false,
     scrollTopPct: 0,
-    viruses: [],
-    createVirus: (newVir) =>
-      set((state) => ({ viruses: [...state.viruses, newVir] })),
     set: (newState) => set((state) => ({ ...state, ...newState })),
   })
 );
