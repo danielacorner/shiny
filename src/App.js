@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import * as React from "react";
+import Layout from "../components/Layout";
+import styled from "styled-components/macro";
+import CanvasAndScene from "../components/CanvasAndScene/CanvasAndScene";
+import ScrollHandler from "../components/ScrollHandler";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <title>Daniel C</title>
+      Hellooo
+      <Background />
+    </Layout>
   );
 }
 
-export default App;
+function Background() {
+  return (
+    <BackgroundStyles>
+      <ScrollHandler>
+        <CanvasAndScene />
+      </ScrollHandler>
+    </BackgroundStyles>
+  );
+}
+
+const BackgroundStyles = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
