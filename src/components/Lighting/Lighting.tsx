@@ -1,9 +1,10 @@
-import { Box } from "@react-three/drei";
+import { Box, useDetectGPU } from "@react-three/drei";
 import React, { useRef } from "react";
 import { useFrame, useThree } from "react-three-fiber";
 import { useAnimationStep } from "../CanvasAndScene/useAnimationStep";
 import { useSpring, animated } from "@react-spring/three";
 import { useStore } from "../../store";
+import RGBLights from "./RGBLights";
 
 export function Lighting() {
   return (
@@ -78,31 +79,39 @@ function LightFollowsMouse() {
     spotlight2Intensity: isD20Active ? 400 : 0,
     pointlightIntensity: !isZoomed ? 3 : 6,
   });
+
+  const gpuInfo = useDetectGPU();
+
   return (
     <>
-      {/* <RGBLights /> */}
-      <animated.pointLight
-        ref={light} /* this one follows the mouse */
-        decay={0}
-        distance={0}
-        intensity={springProps.pointlightIntensity}
-        castShadow={true}
-        color="white"
-      />
-      <animated.spotLight
-        intensity={springProps.spotlightIntensity}
-        ref={spotlightRef} /* this one follows the mouse*/
-        castShadow={true}
-        color="white"
-      />
+      {gpuInfo?.tier && gpuInfo.tier >= 3 && <RGBLights />}
+      {!gpuInfo?.isMobile && (
+        <>
+          <animated.pointLight
+            ref={light} /* this one follows the mouse */
+            decay={0}
+            distance={0}
+            intensity={springProps.pointlightIntensity}
+            castShadow={true}
+            color="white"
+          />
+          <animated.spotLight
+            intensity={springProps.spotlightIntensity}
+            ref={spotlightRef} /* this one follows the mouse*/
+            castShadow={true}
+            color="white"
+          />
+        </>
+      )}
       {process.env.NODE_ENV === "development" && (
         <>
           <Box ref={box} />
-          <Box position={spotlightBox.current?.position} />
         </>
       )}
       <animated.pointLight
-        intensity={springProps.spotlight2Intensity}
+        intensity={
+          springProps.spotlight2Intensity
+        } /* shines on front face of D20 */
         position={[-1, 2.5, 9]}
         castShadow={true}
         color="whitesmoke"

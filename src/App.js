@@ -15,14 +15,13 @@ export default function App() {
 }
 
 function Background() {
-  const tier = useDetectGPU();
-  console.log("🌟🚨 ~ Scene ~ tier", tier);
+  const gpuInfo = useDetectGPU();
   return (
     <BackgroundStyles>
       <ScrollHandler>
         <CanvasAndScene />
       </ScrollHandler>
-      <div className="gpuInfo">{JSON.stringify(tier)}</div>
+      <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
     </BackgroundStyles>
   );
 }

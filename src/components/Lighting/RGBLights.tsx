@@ -1,6 +1,6 @@
 import React from "react";
 
-function RGBLights() {
+export default function RGBLights() {
   return (
     <>
       <pointLight

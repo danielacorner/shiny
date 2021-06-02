@@ -18,9 +18,7 @@ export default function CanvasAndScene() {
       <Controls.Provider>
         <Controls.Canvas
           onCreated={({ gl }) => {
-            if (typeof window !== "undefined") {
-              gl.setPixelRatio(window.devicePixelRatio);
-            }
+            gl.setPixelRatio(window.devicePixelRatio);
             gl.outputEncoding = THREE.sRGBEncoding;
             gl.physicallyCorrectLights = true;
             gl.shadowMap.enabled = true;
