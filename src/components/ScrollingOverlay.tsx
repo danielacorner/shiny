@@ -1,36 +1,51 @@
-import styled from "styled-components/macro";
 import { useWindowSize } from "../utils/hooks";
 import { useAnimationStep } from "./CanvasAndScene/useAnimationStep";
-import { useSpring } from "@react-spring/core";
-import { animated } from "@react-spring/three";
+import { animated, useSpring } from "@react-spring/three";
+import { useControl } from "react-three-gui";
+import { NUM_ANIMATION_STEPS } from "../utils/constants";
 
 export default function ScrollingOverlay() {
-  const animationStep = useAnimationStep();
-  const springScrollRotation = useSpring({
-    rotation: [animationStep, 0, 0],
+  const rot = useControl("rot", {
+    type: "number",
+    min: -10,
+    max: 10,
+    value: 1.47,
   });
   return (
-    <StyledScrollingOverlayMesh style={springScrollRotation}>
+    <mesh>
       {[...Array(22)].map((_, idx) => (
-        <NumberIndicator key={idx} num={idx} />
+        <NumberIndicator key={idx} num={idx} rot={rot} />
       ))}
-    </StyledScrollingOverlayMesh>
+    </mesh>
   );
 }
-const StyledScrollingOverlayMesh = styled(animated.mesh)``;
-function NumberIndicator({ num }) {
+function NumberIndicator({ num, rot }) {
   const windowSize = useWindowSize();
-  const animationStep = useAnimationStep();
   const width = (windowSize.width / 1920) * 40;
-  console.log("🌟🚨 ~ NumberIndicator ~ width", width);
-  const heightMulti = 3;
-  const height = (windowSize.height / 1080) * heightMulti;
-  console.log("🌟🚨 ~ NumberIndicator ~ height", height);
-  const depth = 1;
+  const height = 4;
+  const depth = 0.2;
+
+  const animationStep = useAnimationStep();
+  const rotX = (-rot * num + -0.4 * animationStep) / Math.PI;
+  const translateY = -Math.sin(animationStep / NUM_ANIMATION_STEPS);
+  if (num === 0) {
+    console.log("🌟🚨 ~ NumberIndicator ~ translateY", translateY);
+    console.log("🌟🚨 ~ NumberIndicator ~ rotX", rotX);
+  }
+  const springProps = useSpring({
+    rotX,
+    translateY,
+  });
   return (
-    <mesh {...{ position: [0, (-num + animationStep) * heightMulti, 0] }}>
+    <animated.mesh
+      {...{
+        position: [0, -num * height, num],
+        translate: [0, springProps.translateY, 0],
+        rotateX: springProps.rotX,
+      }}
+    >
       <boxBufferGeometry args={[width, height, depth]} />
-      <meshBasicMaterial color={"red"} />
-    </mesh>
+      <meshLambertMaterial color={"red"} />
+    </animated.mesh>
   );
 }

@@ -162,8 +162,11 @@ export default function SpinningParticle() {
   // const d20Scale = 0.08;
   const d20StarScale = 0.055;
 
+  const ref = useHoverAnimation();
+
   return (
     <animated.mesh
+      ref={ref}
       scale={springProps.scale as any}
       onClick={handleZoomIn}
       onPointerDown={handleZoomIn}
@@ -280,6 +283,26 @@ export default function SpinningParticle() {
       </mesh>
     </animated.mesh>
   );
+}
+
+function useHoverAnimation() {
+  const ref = useRef(null as any);
+  const izZoomed = useIsZoomed();
+  useFrame(({ clock }) => {
+    if (!izZoomed) {
+      return;
+    }
+    if (ref.current) {
+      ref.current.position.y = Math.sin(clock.getElapsedTime()) * 0.08;
+      ref.current.position.x = Math.sin(clock.getElapsedTime()) * 0.05;
+      ref.current.position.z = Math.sin(clock.getElapsedTime()) * 0.03;
+
+      ref.current.rotation.x = Math.sin(clock.getElapsedTime()) * 0.03;
+      ref.current.rotation.y = Math.sin(clock.getElapsedTime() - 2000) * 0.04;
+      ref.current.rotation.z = Math.sin(clock.getElapsedTime() + 1000) * 0.03;
+    }
+  });
+  return ref;
 }
 
 function useSpinObjects(
