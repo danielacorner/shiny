@@ -1,6 +1,4 @@
-import { useWindowSize } from "../utils/hooks";
 import { useAnimationStep } from "./CanvasAndScene/useAnimationStep";
-import { useSpring } from "@react-spring/three";
 import { useControl } from "react-three-gui";
 import { NUM_ANIMATION_STEPS } from "../utils/constants";
 import { useRef } from "react";
