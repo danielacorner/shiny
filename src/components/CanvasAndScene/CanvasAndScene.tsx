@@ -1,7 +1,13 @@
 import React, { Suspense, useState } from "react";
 import { useWindowSize, useInterval } from "../../utils/hooks";
 import * as THREE from "three";
-import { Environment, Sky, Stars, Stats } from "@react-three/drei";
+import {
+  Environment,
+  OrbitControls,
+  Sky,
+  Stars,
+  Stats,
+} from "@react-three/drei";
 import { Lighting } from "../Lighting/Lighting";
 import { Physics } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
@@ -51,8 +57,8 @@ function Scene() {
     <Physics {...PHYSICS_PROPS}>
       <>
         {process.env.NODE_ENV === "development" ? (
-          // <OrbitControls />
-          <DeviceOrientationOrbitControls />
+          // <DeviceOrientationOrbitControls />
+          <OrbitControls {...({} as any)} />
         ) : (
           <DeviceOrientationOrbitControls />
         )}
@@ -65,7 +71,7 @@ function Scene() {
           turbidity={turbidity}
         />
         <SpinningParticle />
-        <ScrollingOverlay />
+        {process.env.NODE_ENV === "development" && <ScrollingOverlay />}
       </>
     </Physics>
   );
