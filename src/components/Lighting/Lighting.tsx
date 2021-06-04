@@ -1,9 +1,9 @@
 import { Box, useDetectGPU } from "@react-three/drei";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { useFrame, useThree } from "react-three-fiber";
 import { useAnimationStep } from "../CanvasAndScene/useAnimationStep";
 import { useSpring, animated } from "@react-spring/three";
-import { useStore } from "../../store";
+import { useIsZoomed } from "../../store";
 import RGBLights from "./RGBLights";
 
 export function Lighting() {
@@ -33,7 +33,7 @@ function LightFollowsMouse() {
   const spotlightRef = useRef(null as any);
   const box = useRef(null as any);
   const spotlightBox = useRef(null as any);
-  const isZoomed = useStore((s) => s.isZoomed);
+  const isZoomed = useIsZoomed();
 
   const { viewport, mouse } = useThree();
 
@@ -105,7 +105,7 @@ function LightFollowsMouse() {
       )}
       {process.env.NODE_ENV === "development" && (
         <>
-          <Box ref={box} />
+          <Box ref={box} {...({} as any)} />
         </>
       )}
       <animated.pointLight

@@ -1,7 +1,7 @@
 import { useFrame } from "react-three-fiber";
 import React, { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
-import { useStore } from "../../store";
+import { useIsZoomed, useStore } from "../../store";
 import { useMount } from "../../utils/hooks";
 import * as THREE from "three";
 import D20_STAR from "../GLTFs/D20_star";
@@ -94,8 +94,9 @@ export default function SpinningParticle() {
   //   min: 0,
   //   max: 360,
   // });
-
-  const isZoomed = useStore((s) => s.isZoomed);
+  const animationStep = useAnimationStep();
+  const isZoomed = animationStep > 0;
+  // const isZoomed = useIsZoomed()
 
   const isD20Active = useIsD20Active();
   // const rotation = { x: degToRad(x), y: degToRad(y), z: degToRad(z) };
@@ -137,6 +138,9 @@ export default function SpinningParticle() {
 
   const [isWireframe, setIsWireframe] = useState(false);
 
+  const springConfigZoomedOut = { mass: 2, tension: 80, friction: 70 };
+  const springonfigZoomedIn = { mass: 1, tension: 80, frction: 70 };
+
   const springProps = useSpring({
     scale: [scale, scale, scale],
     opacityTetrahedron: !isZoomed ? 0.8 : 0.8,
@@ -146,12 +150,7 @@ export default function SpinningParticle() {
     metalnessD20: !isZoomed ? 4 : isD20Active ? metalness : 30,
     roughnessD20: !isZoomed ? 0.5 : isD20Active ? roughness : 0.07,
     roughness: !isZoomed ? 0.4 : 0,
-    config: {
-      mass: 20,
-      tension: isZoomed ? 160 : 80,
-      friction: isZoomed ? 70 : 18,
-      clamp: false,
-    },
+    config: !isZoomed ? springConfigZoomedOut : springonfigZoomedIn,
     onRest: (spring) => {
       if (isZoomed) {
         setIsWireframe(true);
@@ -290,11 +289,11 @@ function useSpinObjects(
   ref4: React.MutableRefObject<any>,
   ref5: React.MutableRefObject<any>
 ) {
-  const isZoomed = useStore((s) => s.isZoomed);
+  const isZoomed = useIsZoomed();
   const isD20Active = useIsD20Active();
-  const rotation = useRotateWithScroll();
+  const d20Rotation = useRotateWithScroll();
 
-  const speedRotate = isD20Active ? 0.08 : 0.05;
+  const rotationSpeed = isD20Active ? 0.12 : 0.05;
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
@@ -310,18 +309,18 @@ function useSpinObjects(
       ref2.current.rotation.y - Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
 
     if (isZoomed) {
-      // move slowly from [x,y,z] to rotation
+      // move in a spring animation from [x,y,z] to rotation
       // e.g. 5 -> 2
       // 5 = 5 + (2-5)/2
+      const deltaX = d20Rotation.x - ref3.current.rotation.x;
       ref3.current.rotation.x =
-        ref3.current.rotation.x +
-        (rotation.x - ref3.current.rotation.x) * speedRotate;
+        ref3.current.rotation.x + deltaX * rotationSpeed;
+      const deltaY = d20Rotation.y - ref3.current.rotation.y;
       ref3.current.rotation.y =
-        ref3.current.rotation.y +
-        (rotation.y - ref3.current.rotation.y) * speedRotate;
+        ref3.current.rotation.y + deltaY * rotationSpeed;
+      const deltaZ = d20Rotation.z - ref3.current.rotation.z;
       ref3.current.rotation.z =
-        ref3.current.rotation.z +
-        (rotation.z - ref3.current.rotation.z) * speedRotate;
+        ref3.current.rotation.z + deltaZ * rotationSpeed;
     } else {
       ref3.current.rotation.x = Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
       ref3.current.rotation.y =

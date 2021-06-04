@@ -9,6 +9,7 @@ import SpinScene from "../SpinScene";
 import SpinningParticle from "./SpinningParticle";
 import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
+import ScrollingOverlay from "../ScrollingOverlay";
 
 export default function CanvasAndScene() {
   const windowSize = useWindowSize();
@@ -64,6 +65,7 @@ function Scene() {
           turbidity={turbidity}
         />
         <SpinningParticle />
+        <ScrollingOverlay />
       </>
     </Physics>
   );

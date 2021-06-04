@@ -1,9 +1,9 @@
 import create from "zustand";
+import { useAnimationStep } from "./components/CanvasAndScene/useAnimationStep";
 
 type GlobalStateType = {
   isZoomed: boolean;
   isSpinning: boolean;
-  isScrollable: boolean;
   /** is the game paused / temperature === 0 */
   paused: boolean;
   /** if a property in the store is animating e.g. scale, can turn things on/off */
@@ -17,7 +17,6 @@ type GlobalStateType = {
 export const useStore = create<GlobalStateType>(
   (set): GlobalStateType => ({
     isSpinning: false,
-    isScrollable: false,
     paused: false,
     isZoomed: false,
     isPropertyAnimating: false,
@@ -25,3 +24,8 @@ export const useStore = create<GlobalStateType>(
     set: (newState) => set((state) => ({ ...state, ...newState })),
   })
 );
+
+export function useIsZoomed() {
+  const animationStep = useAnimationStep();
+  return animationStep > 0;
+}

@@ -9,7 +9,7 @@ import { useDrag } from "@use-gesture/react";
 const HEIGHT_MULTIPLIER = 10;
 export default function ScrollHandler({ children }) {
   const set = useStore((s) => s.set);
-  const isScrollable = useStore((s) => s.isScrollable);
+  const isScrollable = true;
   const windowSize = useWindowSize();
   const maxY = windowSize.height * HEIGHT_MULTIPLIER;
   const [scrollY, setScrollY] = React.useState(0);
