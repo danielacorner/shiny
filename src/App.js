@@ -1,4 +1,3 @@
-import * as React from "react";
 import Layout from "./components/Layout";
 import styled from "styled-components/macro";
 import CanvasAndScene from "./components/CanvasAndScene/CanvasAndScene";

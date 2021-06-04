@@ -736,41 +736,50 @@ export type OrbitControlsProps = ReactThreeFiber.Overwrite<
 /** rotates the scene around the center with device orientation */
 export const DeviceOrientationOrbitControls = React.forwardRef<
   OrbitControlsImpl,
-  OrbitControlsProps
->(({ camera, regress, enableDamping = true, ...restProps }, ref) => {
-  const invalidate = useThree(({ invalidate }) => invalidate);
-  const defaultCamera = useThree(({ camera }) => camera);
-  // const gl = useThree(({ gl }) => gl);
-  const performance = useThree(({ performance }) => performance);
-  const explCamera = camera || defaultCamera;
-  const controls = React.useMemo(
-    () => new OrbitControls(explCamera, undefined),
-    [explCamera]
-  );
+  OrbitControlsProps & { disabled?: boolean }
+>(
+  (
+    { camera, regress, enableDamping = true, disabled = false, ...restProps },
+    ref
+  ) => {
+    const invalidate = useThree(({ invalidate }) => invalidate);
+    const defaultCamera = useThree(({ camera }) => camera);
+    // const gl = useThree(({ gl }) => gl);
+    const performance = useThree(({ performance }) => performance);
+    const explCamera = camera || defaultCamera;
+    const controls = React.useMemo(
+      () => new OrbitControls(explCamera, undefined),
+      [explCamera]
+    );
 
-  useFrame(() => controls.update());
+    useFrame(() => controls.update());
 
-  React.useEffect(() => {
-    const callback = () => {
-      invalidate();
-      if (regress) performance.regress();
-    };
+    React.useEffect(() => {
+      if (controls.enabled !== !disabled) {
+        controls.enabled = !disabled;
+        return;
+      }
+      const callback = () => {
+        invalidate();
+        if (regress) performance.regress();
+      };
 
-    // controls.connect(gl.domElement);
-    controls.addEventListener("change", callback);
-    return () => {
-      controls.removeEventListener("change", callback);
-      controls.dispose();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [regress, controls, invalidate]);
+      // controls.connect(gl.domElement);
+      controls.addEventListener("change", callback);
+      return () => {
+        controls.removeEventListener("change", callback);
+        // controls.dispose();
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [regress, controls, invalidate, disabled]);
 
-  return (
-    <primitive
-      ref={ref}
-      object={controls}
-      enableDamping={enableDamping}
-      {...restProps}
-    />
-  );
-});
+    return (
+      <primitive
+        ref={ref}
+        object={controls}
+        enableDamping={enableDamping}
+        {...restProps}
+      />
+    );
+  }
+);

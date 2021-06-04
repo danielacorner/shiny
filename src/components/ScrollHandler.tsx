@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components/macro";
-import { useStore } from "../store";
+import { useIsZoomed, useStore } from "../store";
 import { CUSTOM_SCROLLBAR_CSS } from "../utils/cssSnippets";
 import { useEventListener, useWindowSize } from "../utils/hooks";
 import debounce from "lodash.debounce";
@@ -43,6 +43,10 @@ export default function ScrollHandler({ children }) {
       pointer: { touch: true },
     }
   );
+  const isZoomed = useIsZoomed();
+  React.useEffect(() => {
+    document.body.style.overscrollBehavior = !isZoomed ? "unset" : "none";
+  }, [isZoomed]);
 
   return (
     <InvisibleScrollStyles {...bind()}>

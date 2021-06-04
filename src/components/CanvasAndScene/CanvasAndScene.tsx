@@ -16,6 +16,7 @@ import SpinningParticle from "./SpinningParticle";
 import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
 import ScrollingOverlay from "../ScrollingOverlay";
+import { useIsZoomed } from "../../store";
 
 export default function CanvasAndScene() {
   const windowSize = useWindowSize();
@@ -53,14 +54,15 @@ export default function CanvasAndScene() {
 
 function Scene() {
   const turbidity = useGetTurbidityByTimeOfDay();
+  const isZoomed = useIsZoomed();
   return (
     <Physics {...PHYSICS_PROPS}>
       <>
         {process.env.NODE_ENV === "development" ? (
-          // <DeviceOrientationOrbitControls />
-          <OrbitControls {...({} as any)} />
+          // <OrbitControls {...({} as any)} />
+          <DeviceOrientationOrbitControls disabled={isZoomed} />
         ) : (
-          <DeviceOrientationOrbitControls />
+          <DeviceOrientationOrbitControls disabled={isZoomed} />
         )}
         <Stars count={1000} />
         <Environment background={false} path={"/"} preset={"night"} />
