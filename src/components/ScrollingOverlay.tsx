@@ -1,10 +1,77 @@
-import { useAnimationStep } from "../store";
+import { useAnimationStep, useStore } from "../store";
 import { useControl } from "react-three-gui";
 import { NUM_ANIMATION_STEPS } from "../utils/constants";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 import { useMediaQuery } from "@material-ui/core";
 import { useFrame } from "@react-three/fiber";
+import styled from "styled-components/macro";
+import { HEIGHT_MULTIPLIER } from "./ScrollHandler";
+import { animated, useSpring } from "@react-spring/web";
+const HEIGHT_VH = (HEIGHT_MULTIPLIER * 100) / NUM_ANIMATION_STEPS;
+const WIDTH_PX = 100;
+
+export function ScrollingOverlaySimple() {
+  const scrollY = useStore((s) => s.scrollY);
+  const isScrolling = useStore((s) => s.isScrolling);
+
+  const springOpacity = useSpring({ opacity: isScrolling ? 0.5 : 0 });
+  return (
+    <SOStyles
+      style={{
+        transform: `translate3D(${0}px,${-scrollY}px,${0}px)`,
+      }}
+    >
+      {[...Array(NUM_ANIMATION_STEPS)].map((_, idx) => {
+        const numDisplay = NUM_ANIMATION_STEPS - idx;
+        return (
+          <animated.div
+            className="numIndicator"
+            style={{
+              transform: `translate3D(${0}px,${
+                (idx + 1) * HEIGHT_VH
+              }vh,${0}px)`,
+              ...springOpacity,
+            }}
+            key={idx}
+          >
+            {numDisplay > 20 ? null : numDisplay}
+            <div className={`tickWrapper${idx === 0 ? " first" : ""}`} />
+          </animated.div>
+        );
+      })}
+    </SOStyles>
+  );
+}
+const SOStyles = styled.div`
+  .numIndicator {
+    color: silver;
+    font-size: 48px;
+    height: ${HEIGHT_VH}vh;
+    z-index: 999;
+    pointer-events: none;
+    width: ${WIDTH_PX}px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin-left: 16px;
+    .tickWrapper {
+      position: relative;
+      margin-top: -28px;
+      &:not(.first)::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: -10px;
+        width: 50px;
+        height: 2px;
+        background: white;
+      }
+    }
+  }
+`;
 
 export default function ScrollingOverlay() {
   const rot = useControl("rot", {

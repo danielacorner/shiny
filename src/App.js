@@ -4,7 +4,7 @@ import CanvasAndScene from "./components/CanvasAndScene/CanvasAndScene";
 import ScrollHandler from "./components/ScrollHandler";
 import { useDetectGPU } from "@react-three/drei";
 import { useSetAnimationStepOnScroll } from "./useSetAnimationStepOnScroll";
-
+import { ScrollingOverlaySimple } from "./components/ScrollingOverlay";
 export default function App() {
   useSetAnimationStepOnScroll();
   const gpuInfo = useDetectGPU();
@@ -15,6 +15,7 @@ export default function App() {
         <ScrollHandler>
           <CanvasAndScene />
         </ScrollHandler>
+        {process.env.NODE_ENV === "development" && <ScrollingOverlaySimple />}
         <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
       </BackgroundStyles>
     </Layout>

@@ -102,7 +102,7 @@ function LightFollowsMouse() {
           />
         </>
       )}
-      {process.env.NODE_ENV === "development" && (
+      {false && process.env.NODE_ENV === "development" && (
         <>
           <Box ref={box} {...({} as any)} />
         </>

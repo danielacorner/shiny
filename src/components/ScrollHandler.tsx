@@ -1,13 +1,11 @@
+import { useDrag } from "@use-gesture/react";
 import * as React from "react";
 import styled from "styled-components/macro";
-import { useIsZoomed, useStore } from "../store";
+import { useStore } from "../store";
 import { CUSTOM_SCROLLBAR_CSS } from "../utils/cssSnippets";
-import { useEventListener, useInterval, useWindowSize } from "../utils/hooks";
-import debounce from "lodash.debounce";
-import { useDrag } from "@use-gesture/react";
-import { useFrame } from "@react-three/fiber";
+import { useInterval, useMount, useWindowSize } from "../utils/hooks";
 
-const HEIGHT_MULTIPLIER = 10;
+export const HEIGHT_MULTIPLIER = 10;
 export default function ScrollHandler({ children }) {
   // const set = useStore((s) => s.set);
   // const isScrollable = useIsScrollable();
@@ -16,7 +14,7 @@ export default function ScrollHandler({ children }) {
   const setScrollY = useStore((s) => s.setScrollY);
   const setScrollTopPct = useStore((s) => s.setScrollTopPct);
 
-  const scrollRef = React.useRef(null as any);
+  const { bindDrag, ref: scrollRef } = useTrackIsScrolling();
 
   // const scrollTo = (y: number) => {
   //   set({
@@ -40,7 +38,7 @@ export default function ScrollHandler({ children }) {
   // * fake useFrame for outside a Canvas
   useInterval({
     callback: () => {
-      const scrollTop = scrollRef.current.scrollTop;
+      const scrollTop = scrollRef?.current.scrollTop;
       setScrollY(scrollTop);
       setScrollTopPct(scrollTop / maxY);
     },
@@ -61,7 +59,6 @@ export default function ScrollHandler({ children }) {
   //     pointer: { touch: true },
   //   }
   // );
-
   // prevent pull-to-refresh when zoomed
   // const isZoomed = useIsZoomed();
   // React.useEffect(() => {
@@ -69,9 +66,9 @@ export default function ScrollHandler({ children }) {
   // }, [isZoomed]);
 
   return (
-    <InvisibleScrollStyles /*  {...bind()} */>
+    <InvisibleScrollStyles>
       {children}
-      <div className="scrollWrapper" ref={scrollRef}>
+      <div className="scrollWrapper" {...bindDrag()} ref={scrollRef}>
         <div className="scrollable" />
       </div>
     </InvisibleScrollStyles>
@@ -83,7 +80,6 @@ const InvisibleScrollStyles = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: hsla(0, 0%, 100%, 0);
   .scrollWrapper {
     ${CUSTOM_SCROLLBAR_CSS}
     overflow-x: hidden;
@@ -100,3 +96,30 @@ const InvisibleScrollStyles = styled.div`
     }
   }
 `;
+
+function useTrackIsScrolling() {
+  const setIsScrolling = useStore((s) => s.setIsScrolling);
+  const timerRef = React.useRef(null as any);
+  const ref = React.useRef(null as any);
+
+  function handleScroll() {
+    // when we drag, set isScrolling true,
+    setIsScrolling(true);
+    // then set back to false later
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, 1 * 1000);
+  }
+
+  useMount(() => {
+    ref.current.addEventListener("scroll", handleScroll);
+  });
+
+  const bindDrag = useDrag((state) => handleScroll, {
+    pointer: { touch: true },
+  });
+  return { bindDrag, ref };
+}

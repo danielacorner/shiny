@@ -15,7 +15,7 @@ import SpinScene from "../SpinScene";
 import SpinningParticle from "./SpinningParticle";
 import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
-import ScrollingOverlay from "../ScrollingOverlay";
+// import ScrollingOverlay from "../ScrollingOverlay";
 import { useIsZoomed } from "../../store";
 import { useFrame, useThree } from "@react-three/fiber";
 
@@ -74,7 +74,7 @@ function Scene() {
           turbidity={turbidity}
         />
         <SpinningParticle />
-        {process.env.NODE_ENV === "development" && <ScrollingOverlay />}
+        {/* {process.env.NODE_ENV === "development" && <ScrollingOverlay />} */}
       </>
     </Physics>
   );

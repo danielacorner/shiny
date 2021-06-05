@@ -22,8 +22,8 @@ export function useSyncStoreStateToLS(stateKey: keyof GlobalStateType) {
 type GlobalStateType = {
   isZoomed: boolean;
   isSpinning: boolean;
-  /** is the game paused / temperature === 0 */
-  paused: boolean;
+  isScrolling: boolean;
+  setIsScrolling: (newState: boolean) => any;
   /** if a property in the store is animating e.g. scale, can turn things on/off */
   isPropertyAnimating: boolean;
   scrollTopPct: number;
@@ -39,7 +39,8 @@ type GlobalStateType = {
 export const useStore = create<GlobalStateType>(
   (set): GlobalStateType => ({
     isSpinning: false,
-    paused: false,
+    isScrolling: false,
+    setIsScrolling: (val) => set({ isScrolling: val }),
     isZoomed: false,
     scrollY: 0,
     setScrollY: (num) => set({ scrollY: num }),
