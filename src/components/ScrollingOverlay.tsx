@@ -1,4 +1,4 @@
-import { useAnimationStep } from "./CanvasAndScene/useAnimationStep";
+import { useAnimationStep } from "../store";
 import { useControl } from "react-three-gui";
 import { NUM_ANIMATION_STEPS } from "../utils/constants";
 import { useRef } from "react";

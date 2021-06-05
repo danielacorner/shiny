@@ -1,12 +1,11 @@
 import { useFrame } from "react-three-fiber";
 import React, { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
-import { useIsZoomed, useStore } from "../../store";
+import { useIsZoomed, useStore, useAnimationStep } from "../../store";
 import { useMount } from "../../utils/hooks";
 import * as THREE from "three";
 import D20_STAR from "../GLTFs/D20_star";
 import { useControl } from "react-three-gui";
-import { useAnimationStep } from "./useAnimationStep";
 
 const SPEED_Y = 0.5;
 const SPEED_X = 0.2;

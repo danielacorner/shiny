@@ -81,7 +81,7 @@ function Scene() {
 }
 
 const TO = { X: 0, Y: 0, Z: 15 };
-const ANIMATION_SPEED = 0.2;
+const ANIMATION_SPEED = 0.07; // 0 to 1
 function useResetCameraWhenZoomed() {
   const isZoomed = useIsZoomed();
   const camera = useThree(({ camera }) => camera);
@@ -94,9 +94,9 @@ function useResetCameraWhenZoomed() {
         z: TO.Z - camera.position.z,
       };
 
-      camera.position.x = TO.X - delta.x * ANIMATION_SPEED;
-      camera.position.y = TO.Y - delta.y * ANIMATION_SPEED;
-      camera.position.z = TO.Z - delta.z * ANIMATION_SPEED;
+      camera.position.x = TO.X - delta.x * (1 - ANIMATION_SPEED);
+      camera.position.y = TO.Y - delta.y * (1 - ANIMATION_SPEED);
+      camera.position.z = TO.Z - delta.z * (1 - ANIMATION_SPEED);
 
       camera.lookAt(0, 0, 0);
     }

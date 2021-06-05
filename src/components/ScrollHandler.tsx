@@ -34,7 +34,10 @@ export default function ScrollHandler({ children }) {
   useEventListener("wheel", handleWheel);
 
   const bind = useDrag(
-    ({ delta: [x, y] }) => {
+    ({ delta: [x, y], distance, ...rest }) => {
+      console.log("🌟🚨 ~ ScrollHandler ~ delta", [x, y]);
+      console.log("🌟🚨 ~ ScrollHandler ~ distance", distance);
+      console.log("🌟🚨 ~ ScrollHandler ~ rest", rest);
       const newScrollY = Math.max(0, Math.min(maxY, scrollY - y));
       scrollTo(newScrollY);
     },

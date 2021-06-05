@@ -3,25 +3,21 @@ import styled from "styled-components/macro";
 import CanvasAndScene from "./components/CanvasAndScene/CanvasAndScene";
 import ScrollHandler from "./components/ScrollHandler";
 import { useDetectGPU } from "@react-three/drei";
+import { useSetAnimationStepOnScroll } from "./useSetAnimationStepOnScroll";
 
 export default function App() {
+  useSetAnimationStepOnScroll();
+  const gpuInfo = useDetectGPU();
   return (
     <Layout>
       Hellooo
-      <Background />
+      <BackgroundStyles>
+        <ScrollHandler>
+          <CanvasAndScene />
+        </ScrollHandler>
+        <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
+      </BackgroundStyles>
     </Layout>
-  );
-}
-
-function Background() {
-  const gpuInfo = useDetectGPU();
-  return (
-    <BackgroundStyles>
-      <ScrollHandler>
-        <CanvasAndScene />
-      </ScrollHandler>
-      <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
-    </BackgroundStyles>
   );
 }
 
