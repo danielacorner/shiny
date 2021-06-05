@@ -156,16 +156,16 @@ export function useEventListener(
  * a dynamic setInterval
  *
  * @param callback function to call on the interval
- * @param delay milliseconds between each call
+ * @param interval milliseconds between each call
  * @param immediate should call the callback right away?
  */
 export const useInterval = ({
   callback,
-  delay,
+  interval: delay,
   immediate = false /* called when mounted if true */,
 }: {
   callback: () => void;
-  delay: number | null | false;
+  interval: number | null | false;
   immediate: boolean;
 }) => {
   const savedCallback = useRef(null as Function | null);

@@ -28,6 +28,9 @@ type GlobalStateType = {
   isPropertyAnimating: boolean;
   scrollTopPct: number;
   animationStep: number;
+  scrollY: number;
+  setScrollY: (newState: number) => any;
+  setScrollTopPct: (newState: number) => any;
   set: (newState: any) => any;
 };
 
@@ -38,8 +41,11 @@ export const useStore = create<GlobalStateType>(
     isSpinning: false,
     paused: false,
     isZoomed: false,
+    scrollY: 0,
+    setScrollY: (num) => set({ scrollY: num }),
     isPropertyAnimating: false,
     scrollTopPct: 0,
+    setScrollTopPct: (num) => set({ scrollTopPct: num }),
     animationStep: 0,
     set: (newState) => set((state) => ({ ...state, ...newState })),
   })

@@ -131,7 +131,7 @@ function useGetTurbidityByTimeOfDay() {
         TURBIDITY.min + brightnessPct * (TURBIDITY.max - TURBIDITY.min)
       );
     },
-    delay: 5 * 60 * 1000,
+    interval: 5 * 60 * 1000,
     immediate: false,
   });
 

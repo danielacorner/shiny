@@ -368,7 +368,6 @@ function useRotateWithScroll() {
     setRotation(SIDES_ROTATIONS[animationStep - 1] || SIDES_ROTATIONS[0]);
   }, [animationStep]);
 
-  console.log("🌟🚨 ~ SpinningParticle ~ animationStep", animationStep);
   return rotation as { x: number; y: number; z: number };
 }
 
