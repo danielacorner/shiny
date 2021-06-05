@@ -17,6 +17,7 @@ import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
 import ScrollingOverlay from "../ScrollingOverlay";
 import { useIsZoomed } from "../../store";
+import { useFrame, useThree } from "@react-three/fiber";
 
 export default function CanvasAndScene() {
   const windowSize = useWindowSize();
@@ -55,10 +56,11 @@ export default function CanvasAndScene() {
 function Scene() {
   const turbidity = useGetTurbidityByTimeOfDay();
   const isZoomed = useIsZoomed();
+  useResetCameraWhenZoomed();
   return (
     <Physics {...PHYSICS_PROPS}>
       <>
-        {process.env.NODE_ENV === "development" ? (
+        {false && process.env.NODE_ENV === "development" ? (
           <OrbitControls {...({} as any)} />
         ) : !isZoomed ? (
           <DeviceOrientationOrbitControls />
@@ -76,6 +78,29 @@ function Scene() {
       </>
     </Physics>
   );
+}
+
+const TO = { X: 0, Y: 0, Z: 15 };
+const ANIMATION_SPEED = 0.2;
+function useResetCameraWhenZoomed() {
+  const isZoomed = useIsZoomed();
+  const camera = useThree(({ camera }) => camera);
+
+  useFrame(() => {
+    if (isZoomed) {
+      const delta = {
+        x: TO.X - camera.position.x,
+        y: TO.Y - camera.position.y,
+        z: TO.Z - camera.position.z,
+      };
+
+      camera.position.x = TO.X - delta.x * ANIMATION_SPEED;
+      camera.position.y = TO.Y - delta.y * ANIMATION_SPEED;
+      camera.position.z = TO.Z - delta.z * ANIMATION_SPEED;
+
+      camera.lookAt(0, 0, 0);
+    }
+  });
 }
 
 const SECONDS_IN_DAY = 24 * 60 * 60;
