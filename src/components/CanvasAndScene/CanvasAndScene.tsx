@@ -59,11 +59,10 @@ function Scene() {
     <Physics {...PHYSICS_PROPS}>
       <>
         {process.env.NODE_ENV === "development" ? (
-          // <OrbitControls {...({} as any)} />
-          <DeviceOrientationOrbitControls disabled={isZoomed} />
-        ) : (
-          <DeviceOrientationOrbitControls disabled={isZoomed} />
-        )}
+          <OrbitControls {...({} as any)} />
+        ) : !isZoomed ? (
+          <DeviceOrientationOrbitControls />
+        ) : null}
         <Stars count={1000} />
         <Environment background={false} path={"/"} preset={"night"} />
         <Sky
