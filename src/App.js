@@ -3,7 +3,7 @@ import styled from "styled-components/macro";
 import CanvasAndScene from "./components/CanvasAndScene/CanvasAndScene";
 import ScrollHandler from "./components/ScrollHandler";
 import { useDetectGPU } from "@react-three/drei";
-import { useSetAnimationStepOnScroll } from "./useSetAnimationStepOnScroll";
+import { useSetAnimationStepOnScroll } from "./components/store/useSetAnimationStepOnScroll";
 import { ScrollingOverlaySimple } from "./components/ScrollingOverlay";
 export default function App() {
   useSetAnimationStepOnScroll();

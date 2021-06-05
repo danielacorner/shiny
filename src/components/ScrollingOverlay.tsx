@@ -1,4 +1,4 @@
-import { useAnimationStep, useStore } from "../store";
+import { useAnimationStep, useStore } from "./store/store";
 import { useControl } from "react-three-gui";
 import { NUM_ANIMATION_STEPS } from "../utils/constants";
 import { useRef, useState } from "react";
@@ -19,18 +19,16 @@ export function ScrollingOverlaySimple() {
   return (
     <SOStyles
       style={{
-        transform: `translate3D(${0}px,${-scrollY}px,${0}px)`,
+        transform: `translate3D(${0}px,calc(${HEIGHT_VH}vh + ${-scrollY}px),${0}px)`,
       }}
     >
       {[...Array(NUM_ANIMATION_STEPS)].map((_, idx) => {
-        const numDisplay = NUM_ANIMATION_STEPS - idx;
+        const numDisplay = NUM_ANIMATION_STEPS - idx - 1;
         return (
           <animated.div
             className="numIndicator"
             style={{
-              transform: `translate3D(${0}px,${
-                (idx + 1) * HEIGHT_VH
-              }vh,${0}px)`,
+              transform: `translate3D(${0}px,${idx * HEIGHT_VH}vh,${0}px)`,
               ...springOpacity,
             }}
             key={idx}
@@ -104,12 +102,6 @@ function NumberIndicator({ num, rot }) {
   const translateY = -Math.sin(animationStep / NUM_ANIMATION_STEPS);
   const heightIndex = num - animationStep;
 
-  if (num === 0) {
-    console.log("🌟🚨 ~ NumberIndicator ~ animationStep", animationStep);
-    console.log("🌟🚨 ~ NumberIndicator ~ translateY", translateY);
-    console.log("🌟🚨 ~ NumberIndicator ~ rotX", rotX);
-    console.log("🌟🚨 ~ NumberIndicator ~ heightIndex", heightIndex);
-  }
   const ref = useRef(null as any);
   // const springProps = useSpring({
   //   rotX,
@@ -126,7 +118,6 @@ function NumberIndicator({ num, rot }) {
     -heightIndex * height,
     -0.58 * heightIndex ** 2.04,
   ];
-  console.log("🌟🚨 ~ NumberIndicator ~ y", y);
 
   const [position, setPosition] = useState([x, y, z]);
 

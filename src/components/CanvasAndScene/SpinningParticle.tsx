@@ -1,7 +1,7 @@
 import { useFrame } from "react-three-fiber";
 import React, { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
-import { useIsZoomed, useStore, useAnimationStep } from "../../store";
+import { useIsZoomed, useStore, useAnimationStep } from "../store/store";
 import { useMount } from "../../utils/hooks";
 import * as THREE from "three";
 import D20_STAR from "../GLTFs/D20_star";
@@ -365,7 +365,12 @@ function useRotateWithScroll() {
   const [rotation, setRotation] = useState(SIDES_ROTATIONS[0]);
 
   useEffect(() => {
-    setRotation(SIDES_ROTATIONS[animationStep - 1] || SIDES_ROTATIONS[0]);
+    console.log("🌟🚨 ~ useRotateWithScroll ~ animationStep", animationStep);
+    const rotationStep = SIDES_ROTATIONS[animationStep - 1];
+    console.log("🌟🚨 ~ useEffect ~ rotationStep", rotationStep);
+    if (rotationStep) {
+      setRotation(rotationStep);
+    }
   }, [animationStep]);
 
   return rotation as { x: number; y: number; z: number };

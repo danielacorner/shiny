@@ -1,7 +1,7 @@
 import { useDrag } from "@use-gesture/react";
 import * as React from "react";
 import styled from "styled-components/macro";
-import { useStore } from "../store";
+import { useStore } from "./store/store";
 import { CUSTOM_SCROLLBAR_CSS } from "../utils/cssSnippets";
 import { useInterval, useMount, useWindowSize } from "../utils/hooks";
 
@@ -40,7 +40,8 @@ export default function ScrollHandler({ children }) {
     callback: () => {
       const scrollTop = scrollRef?.current.scrollTop;
       setScrollY(scrollTop);
-      setScrollTopPct(scrollTop / maxY);
+      const pct = scrollTop / maxY;
+      setScrollTopPct(pct);
     },
     interval: 1000 / 60,
     immediate: false,
@@ -48,9 +49,6 @@ export default function ScrollHandler({ children }) {
 
   // const bind = useDrag(
   //   ({ offset: [x, y], distance, ...rest }) => {
-  //     console.log("🌟🚨 ~ ScrollHandler ~ delta", [x, y]);
-  //     console.log("🌟🚨 ~ ScrollHandler ~ distance", distance);
-  //     console.log("🌟🚨 ~ ScrollHandler ~ rest", rest);
   //     const newScrollY = Math.max(0, Math.min(maxY, scrollY - y));
   //     scrollTo(newScrollY);
   //   },

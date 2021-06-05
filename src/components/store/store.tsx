@@ -1,6 +1,6 @@
 import create from "zustand";
 import { useEffect } from "react";
-import { useLocalStorageState } from "./utils/hooks";
+import { useLocalStorageState } from "../../utils/hooks";
 
 export function useSyncStoreStateToLS(stateKey: keyof GlobalStateType) {
   const set = useStore((s) => s.set);
@@ -31,6 +31,7 @@ type GlobalStateType = {
   scrollY: number;
   setScrollY: (newState: number) => any;
   setScrollTopPct: (newState: number) => any;
+  setAnimationStep: (newState: number) => any;
   set: (newState: any) => any;
 };
 
@@ -48,6 +49,7 @@ export const useStore = create<GlobalStateType>(
     scrollTopPct: 0,
     setScrollTopPct: (num) => set({ scrollTopPct: num }),
     animationStep: 0,
+    setAnimationStep: (num) => set({ animationStep: num }),
     set: (newState) => set((state) => ({ ...state, ...newState })),
   })
 );

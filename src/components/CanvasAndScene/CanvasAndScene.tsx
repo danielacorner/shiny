@@ -16,7 +16,7 @@ import SpinningParticle from "./SpinningParticle";
 import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
 // import ScrollingOverlay from "../ScrollingOverlay";
-import { useIsZoomed } from "../../store";
+import { useIsZoomed } from "../store/store";
 import { useFrame, useThree } from "@react-three/fiber";
 
 export default function CanvasAndScene() {
