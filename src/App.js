@@ -16,9 +16,7 @@ export default function App() {
           <CanvasAndScene />
         </ScrollHandler>
         {process.env.NODE_ENV === "development" && <ScrollingOverlaySimple />}
-        {process.env.NODE_ENV === "development" && (
-          <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
-        )}
+        <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
       </BackgroundStyles>
     </Layout>
   );
