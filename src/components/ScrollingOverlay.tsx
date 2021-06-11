@@ -9,40 +9,50 @@ const WIDTH_PX = 100;
 export function ScrollingOverlaySimple() {
   // scroll overlay height is 10x window height
   const { height } = useWindowSize();
-  const numberIndicatorHeight = height * HEIGHT_MULTIPLIER;
+  const totalScrollableHeight = height * HEIGHT_MULTIPLIER;
+  const numberIndicatorHeight =
+    totalScrollableHeight / (NUM_ANIMATION_STEPS + 2);
   const scrollY = useStore((s) => s.scrollY);
   const isScrolling = useStore((s) => s.isScrolling);
-  const y = numberIndicatorHeight - scrollY;
 
-  const springOpacity = useSpring({ opacity: isScrolling ? 0.5 : 0 });
-  const springScroll = useSpring({
+  const translateY = 2 * numberIndicatorHeight - scrollY;
+  console.log("🌟🚨 ~ ScrollingOverlaySimple ~ translateY", translateY);
+  const spring = useSpring({
     opacity: isScrolling ? 0.5 : 0,
-    transform: `translate3D(${0}px,${y}px),${0}px)`,
+    transform: `translateY(${translateY}px)`,
   });
   return (
-    <SOStyles style={springScroll} {...{ numberIndicatorHeight }}>
-      {[...Array(NUM_ANIMATION_STEPS)].map((_, idx) => {
-        const numDisplay = NUM_ANIMATION_STEPS - idx - 1;
-        return (
-          <animated.div
-            className="numIndicator"
-            style={{
-              transform: `translate3D(${0}px,${
-                idx * numberIndicatorHeight
-              }vh,${0}px)`,
-              ...springOpacity,
-            }}
-            key={idx}
-          >
-            {1 > numDisplay || numDisplay > 20 ? null : numDisplay}
-            <div className={`tickWrapper${idx === 0 ? " first" : ""}`} />
-          </animated.div>
-        );
-      })}
+    <SOStyles {...{ numberIndicatorHeight }}>
+      <animated.div className="animated" style={spring}>
+        {[...Array(NUM_ANIMATION_STEPS)].map((_, idx) => {
+          const numDisplay = NUM_ANIMATION_STEPS - idx - 1;
+          return (
+            <div
+              className="numIndicator"
+              style={{
+                transform: `translate(${0}px,${idx * numberIndicatorHeight}px)`,
+              }}
+              key={idx}
+            >
+              {1 > numDisplay || numDisplay > 20 ? null : numDisplay}
+              <div
+                className={`tickWrapper${idx === 0 ? " first" : ""}${
+                  idx === NUM_ANIMATION_STEPS - 1 ? " last" : ""
+                }`}
+              />
+            </div>
+          );
+        })}
+      </animated.div>
     </SOStyles>
   );
 }
-const SOStyles = styled(animated.div)`
+const SOStyles = styled.div`
+  height: 100vh;
+  pointer-events: none;
+  .animated {
+    height: ${HEIGHT_MULTIPLIER * 100}%;
+  }
   .numIndicator {
     color: silver;
     font-size: 48px;
@@ -58,7 +68,7 @@ const SOStyles = styled(animated.div)`
     .tickWrapper {
       position: relative;
       margin-top: -28px;
-      &:not(.first)::after {
+      &:not(.last)::after {
         content: "";
         position: absolute;
         top: 0;

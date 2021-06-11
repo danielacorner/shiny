@@ -5,7 +5,7 @@ import { useStore } from "./store/store";
 import { CUSTOM_SCROLLBAR_CSS } from "../utils/cssSnippets";
 import { useInterval, useMount, useWindowSize } from "../utils/hooks";
 
-export const HEIGHT_MULTIPLIER = 10;
+export const HEIGHT_MULTIPLIER = 12;
 export default function ScrollHandler({ children }) {
   // const set = useStore((s) => s.set);
   // const isScrollable = useIsScrollable();

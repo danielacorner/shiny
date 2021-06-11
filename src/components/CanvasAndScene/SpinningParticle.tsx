@@ -1,7 +1,7 @@
 import { useFrame } from "react-three-fiber";
 import React, { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
-import { useIsZoomed, useStore, useAnimationStep } from "../store/store";
+import { useIsZoomed, useStore } from "../store/store";
 import { useMount } from "../../utils/hooks";
 import * as THREE from "three";
 import D20_STAR from "../GLTFs/D20_star";
