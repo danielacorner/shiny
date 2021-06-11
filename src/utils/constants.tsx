@@ -1,6 +1,8 @@
+import { useControl } from "react-three-gui";
 import * as THREE from "three";
-
+import isEqual from "lodash.isequal";
 export const INITIAL_ROTATION = { x: 1, y: 2, z: 3 };
+const degToRad = (THREE as any).Math.degToRad;
 
 /** rotate the icosahedron (in degrees) to each face, from 20 to 1 */
 export const ROTATION_STEPS_DEG = [
@@ -14,6 +16,7 @@ export const ROTATION_STEPS_DEG = [
   { x: 42, y: 150, z: 66 }, // 13
   { x: 50.4, y: 230.4, z: 152.4 }, // 12
   { x: 240.4, y: 304.8, z: 146.4 }, // 11
+  // { x: 240.4, y: 304.8, z: 146.4 }, // 11
   { x: 230.4, y: 235.2, z: 326.4 }, // 10
   { x: 230.4, y: 232.8, z: 146.4 }, // 9
   { x: 42, y: 30, z: 252 }, // 8
@@ -26,12 +29,29 @@ export const ROTATION_STEPS_DEG = [
   { x: 268.8, y: 30, z: 246 }, // 1
 ];
 
+export const useRotationSteps = () => {
+  const x = useControl("x", { type: "number", min: -100, max: 100, value: 0 });
+  const y = useControl("y", { type: "number", min: -100, max: 100, value: 0 });
+  const z = useControl("z", { type: "number", min: -100, max: 100, value: 0 });
+  return (
+    ROTATION_STEPS_DEG.map(
+      (step) =>
+        isEqual(step, { x: 240.4, y: 304.8, z: 146.4 }) ? { x, y, z } : step // overriding step 11
+    )
+      // convert to radians
+      .map((xyz) =>
+        Object.fromEntries(
+          Object.entries(xyz).map(([x, degrees]) => [x, degToRad(degrees)])
+        )
+      )
+  );
+};
+
 /** rotate the icosahedron (in radians) to each face, from 20 to 1  */
-const degToRad = (THREE as any).Math.degToRad;
 export const ROTATION_STEPS = ROTATION_STEPS_DEG.map((xyz) =>
   Object.fromEntries(
     Object.entries(xyz).map(([x, degrees]) => [x, degToRad(degrees)])
   )
 );
 
-export const NUM_ANIMATION_STEPS = ROTATION_STEPS.length + 1; // 1 extra step = starting position
+export const NUM_ANIMATION_STEPS = ROTATION_STEPS_DEG.length + 1; // 1 extra step = starting position

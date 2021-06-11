@@ -68,7 +68,7 @@ function LightFollowsMouse() {
     type: "number",
     min: -400,
     max: 800,
-    value: 0,
+    value: 44,
   });
   const spotlightIntensity = useControl("spotlightIntensity", {
     type: "number",

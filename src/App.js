@@ -5,7 +5,7 @@ import ScrollHandler from "./components/ScrollHandler";
 import { useDetectGPU } from "@react-three/drei";
 import { useSetAnimationStepOnScroll } from "./components/store/useSetAnimationStepOnScroll";
 import { ScrollingOverlaySimple } from "./components/ScrollingOverlay";
-import { InfoButton } from "./InfoButton";
+import { InfoButton } from "./components/controls/InfoButton";
 import { useStore } from "./components/store/store";
 
 export default function App() {
