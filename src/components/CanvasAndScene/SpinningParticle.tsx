@@ -76,13 +76,13 @@ export default function SpinningParticle() {
   //   max: 1,
   // });
   const metalness = useControl("metalness", {
-    value: 0.99,
+    value: 4,
     type: "number",
-    min: 0.5,
-    max: 1,
+    min: -4,
+    max: 8,
   });
   const roughness = useControl("roughness", {
-    value: 0.15,
+    value: 0.5,
     type: "number",
     min: 0.0,
     max: 1,
@@ -100,7 +100,7 @@ export default function SpinningParticle() {
     set({ isSpinning: !isZoomed });
   }, [set, isZoomed]);
 
-  const scale = !mounted ? 0 : !isZoomed ? 1.5 : 4.5;
+  const scale = !mounted ? 0 : !isZoomed ? 2 : 4.5;
   const scaleWireMesh = !isZoomed ? 0.5 : 1;
 
   const [isWireframe, setIsWireframe] = useState(false);
@@ -115,8 +115,8 @@ export default function SpinningParticle() {
     opacityIcosahedron: !isZoomed ? 0.2 : 0.2,
     opacityD20: !isZoomed ? 0.6 : 0.2,
     opacityInnerIcosahedron: !isZoomed ? 0 : 0,
-    metalnessD20: !isZoomed ? 4 : metalness,
-    roughnessD20: !isZoomed ? 0.5 : roughness,
+    metalnessD20: !isZoomed ? metalness : 0.99,
+    roughnessD20: !isZoomed ? roughness : 0.15,
     roughness: !isZoomed ? 0.4 : 0,
     config: !isZoomed ? springConfigZoomedOut : springonfigZoomedIn,
     onRest: (spring) => {

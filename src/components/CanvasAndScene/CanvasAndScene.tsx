@@ -47,7 +47,9 @@ export default function CanvasAndScene() {
           </SpinScene>
           <Lighting />
         </Controls.Canvas>
-        {process.env.NODE_ENV !== "production" && <Controls />}
+        {process.env.NODE_ENV !== "production" && (
+          <Controls style={{ zIndex: 99999 }} />
+        )}
       </Controls.Provider>
     </Suspense>
   );

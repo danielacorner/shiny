@@ -26,6 +26,7 @@ type GlobalStateType = {
   setIsScrolling: (newState: boolean) => any;
   /** if a property in the store is animating e.g. scale, can turn things on/off */
   isPropertyAnimating: boolean;
+  isInfoOverlayVisible: boolean;
   scrollTopPct: number;
   animationStep: number;
   scrollY: number;
@@ -46,6 +47,7 @@ export const useStore = create<GlobalStateType>(
     scrollY: 0,
     setScrollY: (num) => set({ scrollY: num }),
     isPropertyAnimating: false,
+    isInfoOverlayVisible: false,
     scrollTopPct: 0,
     setScrollTopPct: (num) => set({ scrollTopPct: num }),
     animationStep: 0,

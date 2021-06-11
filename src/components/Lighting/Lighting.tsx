@@ -4,6 +4,7 @@ import { useFrame, useThree } from "react-three-fiber";
 import { useSpring, animated } from "@react-spring/three";
 import { useIsZoomed } from "../store/store";
 import RGBLights from "./RGBLights";
+import { useControl } from "react-three-gui";
 
 export function Lighting() {
   return (
@@ -63,10 +64,28 @@ function LightFollowsMouse() {
     }
   });
 
+  const spotlight2Intensity = useControl("spotlight2Intensity", {
+    type: "number",
+    min: -400,
+    max: 800,
+    value: 0,
+  });
+  const spotlightIntensity = useControl("spotlightIntensity", {
+    type: "number",
+    min: -30,
+    max: 20,
+    value: 0,
+  });
+  const pointlightIntensity = useControl("pointlightIntensity", {
+    type: "number",
+    min: -5,
+    max: 5,
+    value: 0,
+  });
   const springProps = useSpring({
-    spotlightIntensity: !isZoomed ? -15 : 10,
-    spotlight2Intensity: !isZoomed ? 0 : 400,
-    pointlightIntensity: !isZoomed ? 3 : 6,
+    spotlightIntensity: !isZoomed ? spotlightIntensity : 10,
+    spotlight2Intensity: !isZoomed ? 0 : spotlight2Intensity,
+    pointlightIntensity: !isZoomed ? pointlightIntensity : 6,
   });
 
   const gpuInfo = useDetectGPU();
