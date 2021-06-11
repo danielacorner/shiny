@@ -10,7 +10,6 @@ export default function ScrollHandler({ children }) {
   // const set = useStore((s) => s.set);
   // const isScrollable = useIsScrollable();
   const windowSize = useWindowSize();
-  const maxY = windowSize.height * HEIGHT_MULTIPLIER;
   const setScrollY = useStore((s) => s.setScrollY);
   const setScrollTopPct = useStore((s) => s.setScrollTopPct);
 
@@ -40,6 +39,8 @@ export default function ScrollHandler({ children }) {
     callback: () => {
       const scrollTop = scrollRef?.current.scrollTop;
       setScrollY(scrollTop);
+      const maxY = windowSize.height * (HEIGHT_MULTIPLIER - 1);
+      // pct goes from 0 to 1
       const pct = scrollTop / maxY;
       setScrollTopPct(pct);
     },

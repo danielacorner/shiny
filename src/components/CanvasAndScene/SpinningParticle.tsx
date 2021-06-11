@@ -6,6 +6,7 @@ import { useMount } from "../../utils/hooks";
 import * as THREE from "three";
 import D20_STAR from "../GLTFs/D20_star";
 import { useControl } from "react-three-gui";
+import { useRotateWithScroll } from "./useRotateWithScroll";
 
 const SPEED_Y = 0.5;
 const SPEED_X = 0.2;
@@ -23,7 +24,6 @@ const COMMON_MATERIAL_PROPS = {
 };
 
 const degToRad = (THREE as any).Math.degToRad;
-// const radToDeg = (THREE as any).Math.radToDeg;
 
 // const D20_ROTATION = {
 //   x: degToRad(-0.87),
@@ -35,36 +35,6 @@ const D20_STAR_ROTATION = {
   y: degToRad(-0.02),
   z: degToRad(-0.2),
 };
-
-// rotate the icosahedron to each face, from 20 to 1
-const SIDES_ROTATIONS_DEG = [
-  { x: 88.8, y: 224.4, z: 252 }, // 20
-  { x: 224.4, y: 144, z: 254.4 }, // 19
-  { x: 349.2, y: 163.2, z: 25.2 }, // 18
-  { x: 309.6, y: 27.6, z: 296.4 }, // 17
-  { x: 349.2, y: 16.8, z: 33.6 }, // 16
-  { x: 129.6, y: 30, z: 108 }, // 15
-  { x: 66, y: 271.2, z: 271.2 }, // 14
-  { x: 42, y: 150, z: 66 }, // 13
-  { x: 50.4, y: 230.4, z: 152.4 }, // 12
-  { x: 240.4, y: 304.8, z: 146.4 }, // 11
-  { x: 230.4, y: 235.2, z: 326.4 }, // 10
-  { x: 230.4, y: 232.8, z: 146.4 }, // 9
-  { x: 42, y: 30, z: 252 }, // 8
-  { x: 42, y: 271.2, z: 63.6 }, // 7
-  { x: 302.4, y: 21.6, z: 118.8 }, // 6
-  { x: 163.2, y: 16.8, z: 30 }, // 5
-  { x: 307.2, y: 146.4, z: 110.4 }, // 4
-  { x: 340.8, y: 19.2, z: 213.6 }, // 3
-  { x: 224.4, y: 30, z: 69.6 }, // 2
-  { x: 268.8, y: 30, z: 246 }, // 1
-];
-
-const SIDES_ROTATIONS = SIDES_ROTATIONS_DEG.map((xyz) =>
-  Object.fromEntries(
-    Object.entries(xyz).map(([x, degrees]) => [x, degToRad(degrees)])
-  )
-);
 
 export default function SpinningParticle() {
   const scalePct = 1;
@@ -93,11 +63,8 @@ export default function SpinningParticle() {
   //   min: 0,
   //   max: 360,
   // });
-  const animationStep = useAnimationStep();
-  const isZoomed = animationStep > 0;
-  // const isZoomed = useIsZoomed()
+  const isZoomed = useIsZoomed();
 
-  const isD20Active = useIsD20Active();
   // const rotation = { x: degToRad(x), y: degToRad(y), z: degToRad(z) };
 
   useSpinObjects(ref1, ref2, ref3, ref4, ref5);
@@ -133,7 +100,8 @@ export default function SpinningParticle() {
     set({ isSpinning: !isZoomed });
   }, [set, isZoomed]);
 
-  const scale = isZoomed ? 4.5 : mounted ? 1 : 0;
+  const scale = !mounted ? 0 : !isZoomed ? 1.5 : 4.5;
+  const scaleWireMesh = !isZoomed ? 0.5 : 1;
 
   const [isWireframe, setIsWireframe] = useState(false);
 
@@ -142,12 +110,13 @@ export default function SpinningParticle() {
 
   const springProps = useSpring({
     scale: [scale, scale, scale],
+    scaleWireMesh: [scaleWireMesh, scaleWireMesh, scaleWireMesh],
     opacityTetrahedron: !isZoomed ? 0.8 : 0.8,
-    opacityIcosahedron: !isZoomed ? 0.2 : isD20Active ? 0.2 : 0.8,
-    opacityD20: !isZoomed ? 0.2 : isD20Active ? 0.8 : 0.2,
-    opacityInnerIcosahedron: !isZoomed ? 0 : isD20Active ? 0.9 : 0,
-    metalnessD20: !isZoomed ? 4 : isD20Active ? metalness : 30,
-    roughnessD20: !isZoomed ? 0.5 : isD20Active ? roughness : 0.07,
+    opacityIcosahedron: !isZoomed ? 0.2 : 0.2,
+    opacityD20: !isZoomed ? 0.6 : 0.2,
+    opacityInnerIcosahedron: !isZoomed ? 0 : 0,
+    metalnessD20: !isZoomed ? 4 : metalness,
+    roughnessD20: !isZoomed ? 0.5 : roughness,
     roughness: !isZoomed ? 0.4 : 0,
     config: !isZoomed ? springConfigZoomedOut : springonfigZoomedIn,
     onRest: (spring) => {
@@ -231,8 +200,8 @@ export default function SpinningParticle() {
         >
           <animated.meshPhysicalMaterial
             {...COMMON_MATERIAL_PROPS}
-            transparent={!isD20Active}
-            depthTest={isD20Active}
+            transparent={!isZoomed}
+            depthTest={isZoomed}
             depthWrite={true}
             opacity={springProps.opacityD20}
             metalness={springProps.metalnessD20}
@@ -243,7 +212,7 @@ export default function SpinningParticle() {
           />
         </D20_STAR>
       </mesh>
-      <mesh ref={ref4}>
+      <animated.mesh scale={springProps.scaleWireMesh} ref={ref4}>
         <icosahedronBufferGeometry args={[scalePct * 4, 1]} />
         <meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
@@ -252,8 +221,8 @@ export default function SpinningParticle() {
           opacity={isWireframe ? 0.05 : 0.08}
           depthTest={true}
         />
-      </mesh>
-      <mesh ref={ref5}>
+      </animated.mesh>
+      <animated.mesh scale={springProps.scaleWireMesh} ref={ref5}>
         <icosahedronBufferGeometry args={[scalePct * 14, 2]} />
         <meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
@@ -261,8 +230,8 @@ export default function SpinningParticle() {
           wireframe={true}
           depthTest={isZoomed}
         />
-      </mesh>
-      <mesh>
+      </animated.mesh>
+      <animated.mesh scale={springProps.scaleWireMesh}>
         <icosahedronBufferGeometry args={[scalePct * 100, 5]} />
         <meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
@@ -270,8 +239,8 @@ export default function SpinningParticle() {
           opacity={0.018}
           wireframe={true}
         />
-      </mesh>
-      <mesh>
+      </animated.mesh>
+      <animated.mesh scale={springProps.scaleWireMesh}>
         <icosahedronBufferGeometry args={[scalePct * 600, 10]} />
         <meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
@@ -279,7 +248,7 @@ export default function SpinningParticle() {
           opacity={0.01}
           wireframe={true}
         />
-      </mesh>
+      </animated.mesh>
     </animated.mesh>
   );
 }
@@ -312,10 +281,9 @@ function useSpinObjects(
   ref5: React.MutableRefObject<any>
 ) {
   const isZoomed = useIsZoomed();
-  const isD20Active = useIsD20Active();
   const d20Rotation = useRotateWithScroll();
 
-  const rotationSpeed = isD20Active ? 0.12 : 0.05;
+  const rotationSpeed = !isZoomed ? 0.12 : 0.05;
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
@@ -359,24 +327,7 @@ function useSpinObjects(
   });
 }
 
-function useRotateWithScroll() {
-  const animationStep = useAnimationStep();
-
-  const [rotation, setRotation] = useState(SIDES_ROTATIONS[0]);
-
-  useEffect(() => {
-    console.log("🌟🚨 ~ useRotateWithScroll ~ animationStep", animationStep);
-    const rotationStep = SIDES_ROTATIONS[animationStep - 1];
-    console.log("🌟🚨 ~ useEffect ~ rotationStep", rotationStep);
-    if (rotationStep) {
-      setRotation(rotationStep);
-    }
-  }, [animationStep]);
-
-  return rotation as { x: number; y: number; z: number };
-}
-
-function useIsD20Active() {
-  const animationStep = useAnimationStep();
-  return animationStep > 0;
-}
+// function useIsD20Active() {
+//   const animationStep = useAnimationStep();
+//   return animationStep > 0;
+// }

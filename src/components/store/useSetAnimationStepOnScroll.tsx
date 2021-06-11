@@ -7,9 +7,8 @@ export function useSetAnimationStepOnScroll() {
   const scrollTopPct = useStore((s) => s.scrollTopPct);
 
   useEffect(() => {
-    const step = scrollTopPct * NUM_ANIMATION_STEPS;
-    console.log("🌟🚨 ~ useEffect ~ scrollTopPct", scrollTopPct);
-    console.log("🌟🚨 ~ useEffect ~ step", step);
-    setAnimationStep(Math.round(step));
+    // step goes from 1 to 21
+    const step = Math.max(1, Math.ceil(scrollTopPct * NUM_ANIMATION_STEPS));
+    setAnimationStep(step);
   }, [scrollTopPct, setAnimationStep]);
 }

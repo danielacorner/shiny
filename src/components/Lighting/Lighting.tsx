@@ -63,19 +63,9 @@ function LightFollowsMouse() {
     }
   });
 
-  const animationStep = useAnimationStep();
-  const isD20Active = animationStep > 0;
-
-  // const spotInt = useControl("spotInt", {
-  //   type: "number",
-  //   min: -100,
-  //   max: 200,
-  //   value: 50,
-  // });
-
   const springProps = useSpring({
-    spotlightIntensity: isD20Active ? 10 : -15,
-    spotlight2Intensity: isD20Active ? 400 : 0,
+    spotlightIntensity: !isZoomed ? -15 : 10,
+    spotlight2Intensity: !isZoomed ? 0 : 400,
     pointlightIntensity: !isZoomed ? 3 : 6,
   });
 
@@ -83,9 +73,9 @@ function LightFollowsMouse() {
 
   return (
     <>
-      {gpuInfo?.tier && gpuInfo.tier >= 3 && <RGBLights />}
-      {!gpuInfo?.isMobile && (
+      {gpuInfo?.tier && gpuInfo.tier >= 3 && (
         <>
+          <RGBLights />
           <animated.pointLight
             ref={light} /* this one follows the mouse */
             decay={0}
