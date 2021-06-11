@@ -16,11 +16,12 @@ import SpinningParticle from "./SpinningParticle";
 import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
 // import ScrollingOverlay from "../ScrollingOverlay";
-import { useIsZoomed } from "../store/store";
+import { useIsZoomed, useStore } from "../store/store";
 import { useFrame, useThree } from "@react-three/fiber";
 
 export default function CanvasAndScene() {
   const windowSize = useWindowSize();
+  const isInfoOverlayVisible = useStore((s) => s.isInfoOverlayVisible);
 
   return (
     <Suspense fallback={null}>
@@ -42,12 +43,12 @@ export default function CanvasAndScene() {
           <SpinScene>
             <mesh scale={[1, 1, 1]}>
               <Scene />
-              <Stats />
+              {isInfoOverlayVisible && <Stats />}
             </mesh>
           </SpinScene>
           <Lighting />
         </Controls.Canvas>
-        {process.env.NODE_ENV !== "production" && (
+        {process.env.NODE_ENV !== "production" && isInfoOverlayVisible && (
           <Controls style={{ zIndex: 99999 }} />
         )}
       </Controls.Provider>

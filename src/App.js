@@ -5,13 +5,13 @@ import ScrollHandler from "./components/ScrollHandler";
 import { useDetectGPU } from "@react-three/drei";
 import { useSetAnimationStepOnScroll } from "./components/store/useSetAnimationStepOnScroll";
 import { ScrollingOverlaySimple } from "./components/ScrollingOverlay";
+import { InfoButton } from "./InfoButton";
 import { useStore } from "./components/store/store";
-import { Info } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
 
 export default function App() {
   useSetAnimationStepOnScroll();
   const gpuInfo = useDetectGPU();
+  const isInfoOverlayVisible = useStore((s) => s.isInfoOverlayVisible);
   return (
     <Layout>
       Hellooo
@@ -21,7 +21,9 @@ export default function App() {
         </ScrollHandler>
         <ScrollingOverlaySimple />
         <InfoButton />
-        <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
+        {isInfoOverlayVisible && (
+          <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
+        )}
       </BackgroundStyles>
     </Layout>
   );
@@ -41,16 +43,3 @@ const BackgroundStyles = styled.div`
     left: 50%;
   }
 `;
-
-/** show or hide the info overlay */
-function InfoButton() {
-  const isInfoOverlayVisible = useStore((s) => s.isInfoOverlayVisible);
-  const set = useStore((s) => s.set);
-  return (
-    <IconButton
-      onClick={() => set({ isInfoOverlayVisible: !isInfoOverlayVisible })}
-    >
-      <Info />
-    </IconButton>
-  );
-}
