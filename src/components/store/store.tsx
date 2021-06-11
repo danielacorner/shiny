@@ -60,7 +60,6 @@ export function useAnimationStep() {
 
 export function useIsZoomed() {
   const animationStep = useAnimationStep();
-  console.log("🌟🚨 ~ useIsZoomed ~ animationStep", animationStep);
   return animationStep > 1;
 }
 export function useIsSpinning() {

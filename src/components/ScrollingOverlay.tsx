@@ -16,7 +16,6 @@ export function ScrollingOverlaySimple() {
   const isScrolling = useStore((s) => s.isScrolling);
 
   const translateY = 2 * numberIndicatorHeight - scrollY;
-  console.log("🌟🚨 ~ ScrollingOverlaySimple ~ translateY", translateY);
   const spring = useSpring({
     opacity: isScrolling ? 0.5 : 0,
     transform: `translateY(${translateY}px)`,

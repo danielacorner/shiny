@@ -11,9 +11,6 @@ export function useRotateWithScroll() {
   useEffect(() => {
     const rotationStep = animationStep - 2; // starting position
     const rotation = ROTATION_STEPS[rotationStep] || INITIAL_ROTATION;
-    console.log("🌟🚨 ~ useEffect ~ animationStep", animationStep);
-    console.log("🌟🚨 ~ useEffect ~ rotationStep", rotationStep);
-    console.log("🌟🚨 ~ useEffect ~ rotation", rotation);
     if (isEqual(rotation, INITIAL_ROTATION)) {
       return;
       // setRotation()
