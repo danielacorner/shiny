@@ -99,7 +99,6 @@ function RollableD20() {
   const [planeRef] = usePlane(() => ({
     rotation: [0, 0, 0],
     position: [0, 0, -8],
-    // color: "white",
     // ...props,
   }));
 

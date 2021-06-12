@@ -9,6 +9,8 @@ const ROLL_TIME = 2 * 1000;
 
 export function useRollTheDieCannon() {
   const isRollingDie = useStore((s) => s.isRollingDie);
+  const isRollingComplete = useStore((s) => s.isRollingComplete);
+  const set = useStore((s) => s.set);
   // const [icosahedronPhysicsRef, api] = useConvexPolyhedron(() => ({
   //   mass: 1, // approximate mass using volume of a sphere equation
   //   // position,
@@ -16,8 +18,6 @@ export function useRollTheDieCannon() {
   //   // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronBufferGeometry
   //   args: new THREE.IcosahedronGeometry(1, 1),
   // }));
-
-  const [isRollingComplete, setIsRollingComplete] = useState(false);
 
   const [icosahedronPhysicsRef, api] = useBox(() => ({
     mass: 1,
@@ -29,8 +29,11 @@ export function useRollTheDieCannon() {
   useEffect(() => {
     let timer = null as number | null;
     if (isRollingDie) {
-      setIsRollingComplete(false);
-      timer = window.setTimeout(() => setIsRollingComplete(true), ROLL_TIME);
+      set({ isRollingComplete: false });
+      timer = window.setTimeout(
+        () => set({ isRollingComplete: true }),
+        ROLL_TIME
+      );
 
       const impulse = [Math.random() * x - x, Math.random() * x - x, -10];
       const worldPoint = [0, 0, 10];
@@ -49,15 +52,11 @@ export function useRollTheDieCannon() {
   useFrame(({ camera }) => {
     if (isRollingDie && isRollingComplete) {
       const d20Position = icosahedronPhysicsRef.current.position;
-      console.log(
-        "🌟🚨 ~ useFrame ~ icosahedronPhysicsRef.current",
-        icosahedronPhysicsRef.current
-      );
       const CAMERA_POSITION_ZOOMED = {
-        x: 0,
-        // x: d20Position.x,
-        // y: d20Position.y,
-        y: 0,
+        x: d20Position.x,
+        y: d20Position.y,
+        // x: 0,
+        // y: -0,
         z: -0,
       };
 
@@ -70,7 +69,7 @@ export function useRollTheDieCannon() {
       const z = camera.position.z + deltaZ * ZOOM_SPEED;
       camera.position.set(x, y, z);
 
-      // camera.lookAt(icosahedronPhysicsRef.current)
+      camera.lookAt(0, 0, -100);
     }
   });
 

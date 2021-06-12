@@ -35,6 +35,7 @@ function LightFollowsMouse() {
   const spotlightBox = useRef(null as any);
   const isZoomed = useIsZoomed();
   const isRollingDie = useStore((s) => s.isRollingDie);
+  const isRollingComplete = useStore((s) => s.isRollingComplete);
   const isD20Opaque = isRollingDie || isZoomed;
 
   const { viewport, mouse } = useThree();
@@ -89,6 +90,7 @@ function LightFollowsMouse() {
     spotlightIntensity: !isD20Opaque ? spotlightIntensity : 10,
     spotlight2Intensity: !isD20Opaque ? 0 : spotlight2Intensity,
     pointlightIntensity: !isD20Opaque ? pointlightIntensity : 6,
+    directionalLightIntensity: isRollingComplete ? 20 : 0,
   });
 
   const gpuInfo = useDetectGPU();
@@ -127,6 +129,14 @@ function LightFollowsMouse() {
         castShadow={true}
         color="whitesmoke"
       />
+      {isRollingDie && (
+        <animated.directionalLight
+          intensity={springProps.directionalLightIntensity}
+          color="white"
+          position={[-1, 2.5, 50]}
+          castShadow={true}
+        />
+      )}
     </>
   );
 }

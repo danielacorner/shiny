@@ -119,8 +119,8 @@ export default function SpinningParticle() {
     opacityIcosahedron: !isD20Opaque ? 0.2 : 0.2,
     opacityD20: isRollingDie ? 1 : !isD20Opaque ? 0.6 : 0.2,
     opacityInnerIcosahedron: !isD20Opaque ? 0 : 0,
-    metalnessD20: !isD20Opaque ? metalness : 0.99,
-    roughnessD20: !isD20Opaque ? roughness : 0.15,
+    metalnessD20: isRollingDie ? 0.99 : !isD20Opaque ? metalness : 0.99,
+    roughnessD20: isRollingDie ? 0.15 : !isD20Opaque ? roughness : 0.15,
     roughness: !isD20Opaque ? 0.4 : 0,
     config: !isD20Opaque ? springConfigZoomedOut : springonfigZoomedIn,
     onRest: (spring) => {
