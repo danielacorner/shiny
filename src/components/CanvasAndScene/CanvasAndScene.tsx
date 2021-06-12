@@ -8,10 +8,9 @@ import {
   Sky,
   Stars,
   Stats,
-  Plane,
 } from "@react-three/drei";
 import { Lighting } from "../Lighting/Lighting";
-import { Physics, usePlane, useSphere } from "@react-three/cannon";
+import { Physics, usePlane } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
 import SpinScene from "../SpinScene";
 import SpinningParticle from "./SpinningParticle/SpinningParticle";
@@ -99,7 +98,7 @@ function RollableD20() {
   const rollTheDieCannonRef = useRollTheDieCannon();
   const [planeRef] = usePlane(() => ({
     rotation: [0, 0, 0],
-    position: [0, 0, -10],
+    position: [0, 0, -8],
     // color: "white",
     // ...props,
   }));
@@ -107,11 +106,13 @@ function RollableD20() {
   // const icosahedronPhysicsRef = null;
 
   return (
-    <mesh ref={rollTheDieCannonRef}>
-      <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
-        <SpinningParticle />
-      </ErrorBoundary>
-      <Plane ref={planeRef} args={[2, 2]} color={"white"} {...({} as any)} />
+    <mesh>
+      <mesh ref={rollTheDieCannonRef}>
+        <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
+          <SpinningParticle />
+        </ErrorBoundary>
+      </mesh>
+      <mesh ref={planeRef} />
     </mesh>
   );
 }
@@ -120,10 +121,11 @@ const TO = { X: 0, Y: 0, Z: 15 };
 const ANIMATION_SPEED = 0.07; // 0 to 1
 function useResetCameraWhenZoomed() {
   const isZoomed = useIsZoomed();
+  const isRollingDie = useStore((s) => s.isRollingDie);
   const camera = useThree(({ camera }) => camera);
 
   useFrame(() => {
-    if (isZoomed) {
+    if (isZoomed && !isRollingDie) {
       const delta = {
         x: TO.X - camera.position.x,
         y: TO.Y - camera.position.y,

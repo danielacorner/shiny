@@ -1,7 +1,11 @@
 import { useBox, useConvexPolyhedron } from "@react-three/cannon";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../../store/store";
 import * as THREE from "three";
+import { useFrame } from "@react-three/fiber";
+
+const ZOOM_SPEED = 0.1;
+const ROLL_TIME = 2 * 1000;
 
 export function useRollTheDieCannon() {
   const isRollingDie = useStore((s) => s.isRollingDie);
@@ -13,21 +17,62 @@ export function useRollTheDieCannon() {
   //   args: new THREE.IcosahedronGeometry(1, 1),
   // }));
 
+  const [isRollingComplete, setIsRollingComplete] = useState(false);
+
   const [icosahedronPhysicsRef, api] = useBox(() => ({
     mass: 1,
     position: [0, 0, 0],
   }));
 
   // throw the die
+  const x = 1;
   useEffect(() => {
+    let timer = null as number | null;
     if (isRollingDie) {
-      const impulse = [0, 0, -10];
+      setIsRollingComplete(false);
+      timer = window.setTimeout(() => setIsRollingComplete(true), ROLL_TIME);
+
+      const impulse = [Math.random() * x - x, Math.random() * x - x, -10];
       const worldPoint = [0, 0, 10];
       api.applyImpulse(impulse, worldPoint);
-    } else {
     }
+
+    return () => {
+      if (timer) {
+        window.clearTimeout(timer);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRollingDie]);
+
+  // zoom in the camera after we roll
+  useFrame(({ camera }) => {
+    if (isRollingDie && isRollingComplete) {
+      const d20Position = icosahedronPhysicsRef.current.position;
+      console.log(
+        "🌟🚨 ~ useFrame ~ icosahedronPhysicsRef.current",
+        icosahedronPhysicsRef.current
+      );
+      const CAMERA_POSITION_ZOOMED = {
+        x: 0,
+        // x: d20Position.x,
+        // y: d20Position.y,
+        y: 0,
+        z: -0,
+      };
+
+      // zoom in
+      const deltaX = CAMERA_POSITION_ZOOMED.x - camera.position.x;
+      const x = camera.position.x + deltaX * ZOOM_SPEED;
+      const deltaY = CAMERA_POSITION_ZOOMED.y - camera.position.y;
+      const y = camera.position.y + deltaY * ZOOM_SPEED;
+      const deltaZ = CAMERA_POSITION_ZOOMED.z - camera.position.z;
+      const z = camera.position.z + deltaZ * ZOOM_SPEED;
+      camera.position.set(x, y, z);
+
+      // camera.lookAt(icosahedronPhysicsRef.current)
+    }
+  });
 
   return icosahedronPhysicsRef;
 }
