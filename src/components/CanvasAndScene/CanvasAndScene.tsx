@@ -10,7 +10,7 @@ import {
   Stats,
 } from "@react-three/drei";
 import { Lighting } from "../Lighting/Lighting";
-import { Physics } from "@react-three/cannon";
+import { Physics, useSphere } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
 import SpinScene from "../SpinScene";
 import SpinningParticle from "./SpinningParticle/SpinningParticle";
@@ -18,9 +18,12 @@ import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
 // import ScrollingOverlay from "../ScrollingOverlay";
 import { useIsZoomed, useStore } from "../store/store";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree, Canvas } from "@react-three/fiber";
 import { useRollTheDieCannon } from "./SpinningParticle/useRollTheDieCannon";
 import { ErrorBoundary } from "../ErrorBoundary";
+
+const CONTROLLED = false;
+const Canv = CONTROLLED ? Controls.Canvas : Canvas;
 
 export default function CanvasAndScene() {
   const windowSize = useWindowSize();
@@ -29,7 +32,7 @@ export default function CanvasAndScene() {
   return (
     <Suspense fallback={null}>
       <Controls.Provider>
-        <Controls.Canvas
+        <Canv
           onCreated={({ gl }) => {
             gl.setPixelRatio(window.devicePixelRatio);
             gl.outputEncoding = THREE.sRGBEncoding;
@@ -38,7 +41,6 @@ export default function CanvasAndScene() {
             gl.shadowMap.type = THREE.PCFSoftShadowMap;
             gl.toneMapping = THREE.ACESFilmicToneMapping;
           }}
-          shadowMap={true}
           gl={{ antialias: false, alpha: false }}
           {...{ camera: { fov: 75, position: [0, 0, 15] } }}
           style={{ height: windowSize.height, width: windowSize.width }}
@@ -52,10 +54,10 @@ export default function CanvasAndScene() {
             </ErrorBoundary>
           </SpinScene>
           <Lighting />
-        </Controls.Canvas>
-        {process.env.NODE_ENV !== "production" && isInfoOverlayVisible && (
-          <Controls style={{ zIndex: 99999 }} />
-        )}
+        </Canv>
+        {process.env.NODE_ENV !== "production" &&
+          isInfoOverlayVisible &&
+          CONTROLLED && <Controls style={{ zIndex: 99999 }} />}
       </Controls.Provider>
     </Suspense>
   );
@@ -65,35 +67,47 @@ function Scene() {
   const turbidity = useGetTurbidityByTimeOfDay();
   const isZoomed = useIsZoomed();
   useResetCameraWhenZoomed();
-  const rollTheDieCannonRef = useRollTheDieCannon();
 
   return (
-    <Physics {...PHYSICS_PROPS}>
-      <>
-        {false && process.env.NODE_ENV === "development" ? (
-          <OrbitControls {...({} as any)} />
-        ) : !isZoomed ? (
-          <DeviceOrientationOrbitControls />
-        ) : null}
-        <Stars count={1000} />
-        <Environment background={false} path={"/"} preset={"night"} />
-        <Sky
-          rayleigh={7}
-          mieCoefficient={0.1}
-          mieDirectionalG={1}
-          turbidity={turbidity}
-        />
+    <>
+      {false && process.env.NODE_ENV === "development" ? (
+        <OrbitControls {...({} as any)} />
+      ) : !isZoomed ? (
+        <DeviceOrientationOrbitControls />
+      ) : null}
+      <Stars count={1000} />
+      <Environment background={false} path={"/"} preset={"night"} />
+      <Sky
+        rayleigh={7}
+        mieCoefficient={0.1}
+        mieDirectionalG={1}
+        turbidity={turbidity}
+      />
+      <Physics {...PHYSICS_PROPS}>
         <ErrorBoundary component={<Html>❌ rollTheDieCannonRef</Html>}>
-          <mesh ref={rollTheDieCannonRef}>
-            <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
-              <SpinningParticle />
-            </ErrorBoundary>
-          </mesh>
+          <Thing />
+          <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
+            <SpinningParticle />
+          </ErrorBoundary>
         </ErrorBoundary>
+      </Physics>
+    </>
+  );
+}
+function Thing() {
+  // const rollTheDieCannonRef = null;
+  // const rollTheDieCannonRef = useRollTheDieCannon();
 
-        {/* {process.env.NODE_ENV === "development" && <ScrollingOverlay />} */}
-      </>
-    </Physics>
+  // const icosahedronPhysicsRef = null;
+  const [icosahedronPhysicsRef] = useSphere(() => ({
+    mass: 1,
+    position: [0, 0, 0],
+  }));
+  return (
+    <mesh ref={icosahedronPhysicsRef}>
+      <boxBufferGeometry args={[1, 1, 1]} />
+      <meshBasicMaterial color={"white"} />
+    </mesh>
   );
 }
 

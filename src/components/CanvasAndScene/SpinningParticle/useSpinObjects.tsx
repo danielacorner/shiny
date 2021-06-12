@@ -1,4 +1,4 @@
-import { useFrame } from "react-three-fiber";
+import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useState } from "react";
 import { useIsZoomed } from "../../store/store";
 import { usePrevious } from "../../../utils/hooks";

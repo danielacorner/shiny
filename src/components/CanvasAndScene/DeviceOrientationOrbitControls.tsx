@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Camera, MOUSE, TOUCH, Vector3, EventDispatcher } from "three";
 
 import * as React from "react";
-import { ReactThreeFiber, useThree, useFrame } from "react-three-fiber";
+import { ReactThreeFiber, useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 // copied from https://stackoverflow.com/questions/35023076/orbiting-around-the-origin-using-a-devices-orientation

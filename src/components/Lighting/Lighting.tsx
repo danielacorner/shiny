@@ -1,6 +1,6 @@
 import { Box, useDetectGPU } from "@react-three/drei";
 import { useRef } from "react";
-import { useFrame, useThree } from "react-three-fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
 import { useIsZoomed } from "../store/store";
 import RGBLights from "./RGBLights";

@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useEffect } from "react";
-import { useFrame, addTail, useThree } from "react-three-fiber";
+import { useFrame, addTail, useThree } from "@react-three/fiber";
 import throttle from "lodash.throttle";
 import { Html } from "@react-three/drei";
 
