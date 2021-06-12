@@ -3,6 +3,9 @@ export const INITIAL_ROTATION = { x: 1, y: 2, z: 3 };
 const degToRad = (THREE as any).Math.degToRad;
 
 export const STEP11 = { x: 240.4, y: 304.8, z: 146.4 };
+export const STEP11_RAD = Object.fromEntries(
+  Object.entries(STEP11).map(([x, degrees]) => [x, degToRad(degrees)])
+);
 
 /** rotate the icosahedron (in degrees) to each face, from 20 to 1 */
 export const ROTATION_STEPS_DEG = [
