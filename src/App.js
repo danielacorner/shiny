@@ -6,6 +6,7 @@ import { useDetectGPU } from "@react-three/drei";
 import { useSetAnimationStepOnScroll } from "./components/store/useSetAnimationStepOnScroll";
 import { ScrollingOverlaySimple } from "./components/ScrollingOverlay";
 import { InfoButton } from "./components/controls/InfoButton";
+import { SoundButton } from "./components/controls/SoundButton";
 import { useStore } from "./components/store/store";
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
         </ScrollHandler>
         <ScrollingOverlaySimple />
         <InfoButton />
+        <SoundButton />
         {isInfoOverlayVisible && (
           <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
         )}
