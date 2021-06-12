@@ -2,7 +2,7 @@ import { useFrame } from "react-three-fiber";
 import React, { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import { useIsZoomed, useStore } from "../store/store";
-import { useMount } from "../../utils/hooks";
+import { useMount, usePrevious } from "../../utils/hooks";
 import * as THREE from "three";
 import D20_STAR from "../GLTFs/D20_star";
 import { useControl } from "react-three-gui";
@@ -285,6 +285,21 @@ function useSpinObjects(
 
   const rotationSpeed = !isZoomed ? 0.12 : 0.05;
 
+  // manually detect when we just went from isZoomed to !isZoomed
+  const [isZoomingOut, setIsZoomingOut] = useState(false);
+  const prevIsZoomed = usePrevious(isZoomed);
+  const nextIsZoomingOut = Boolean(prevIsZoomed && !isZoomed);
+  useEffect(() => {
+    console.log("🌟🚨 ~ useEffect ~ nextIsZoomingOut", nextIsZoomingOut);
+    if (nextIsZoomingOut) {
+      window.setTimeout(() => {
+        setIsZoomingOut(false);
+      }, 5 * 1000);
+      setIsZoomingOut(true);
+    }
+  }, [nextIsZoomingOut]);
+
+  // spin the particle
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
     if (!ref1.current) {
@@ -298,7 +313,9 @@ function useSpinObjects(
     ref2.current.rotation.y =
       ref2.current.rotation.y - Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
 
-    if (isZoomed) {
+    console.log("🌟🚨 ~ useFrame ~ isZoomingOut", isZoomingOut);
+    if (isZoomingOut) {
+    } else if (isZoomed) {
       // move in a spring animation from [x,y,z] to rotation
       // e.g. 5 -> 2
       // 5 = 5 + (2-5)/2
@@ -312,6 +329,7 @@ function useSpinObjects(
       ref3.current.rotation.z =
         ref3.current.rotation.z + deltaZ * rotationSpeed;
     } else {
+      // move in a spring if returning
       ref3.current.rotation.x = Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
       ref3.current.rotation.y =
         ref3.current.rotation.y + Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
