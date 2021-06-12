@@ -23,6 +23,7 @@ type GlobalStateType = {
   isZoomed: boolean;
   isRollingDie: boolean;
   isRollingComplete: boolean;
+  isZoomingOut: boolean;
   isSpinning: boolean;
   isScrolling: boolean;
   setIsScrolling: (newState: boolean) => any;
@@ -44,6 +45,7 @@ export const useStore = create<GlobalStateType>(
   (set): GlobalStateType => ({
     isRollingDie: false,
     isRollingComplete: false,
+    isZoomingOut: false,
     isSpinning: false,
     isScrolling: false,
     setIsScrolling: (val) => set({ isScrolling: val }),

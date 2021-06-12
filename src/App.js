@@ -10,9 +10,11 @@ import { SoundButton } from "./components/controls/SoundButton";
 import { RollTheDieButton } from "./components/controls/RollTheDieButton";
 import { useStore } from "./components/store/store";
 import ErrorBoundary from "./components/ErrorBoundary";
+import useDetectIsZoomingOut from "./components/CanvasAndScene/useDetectIsZoomingOut";
 
 export default function App() {
   useSetAnimationStepOnScroll();
+  useDetectIsZoomingOut();
   const gpuInfo = useDetectGPU();
   const isInfoOverlayVisible = useStore((s) => s.isInfoOverlayVisible);
 

@@ -1,15 +1,17 @@
 import { Casino, Undo } from "@material-ui/icons";
 import { IconButton, Tooltip } from "@material-ui/core";
 import styled from "styled-components/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../store/store";
 import { animated, useSpring } from "react-spring";
+import { ROLL_TIME } from "../../utils/constants";
 
 const AnimatedIconButton = animated(IconButton);
 
 /** show or hide the info overlay */
 export function RollTheDieButton() {
   const isRollingDie = useStore((s) => s.isRollingDie);
+  const isRollingComplete = useStore((s) => s.isRollingComplete);
   const set = useStore((s) => s.set);
   const [isHovered, setIsHovered] = useState(false);
   const springRoll = useSpring({
@@ -17,6 +19,25 @@ export function RollTheDieButton() {
     opacity: isRollingDie ? 0 : 1,
   });
   const springReset = useSpring({ opacity: isRollingDie ? 1 : 0 });
+
+  // when we reset to not-rolling, reset "is rolling complete" after a timeout
+  useEffect(() => {
+    let timer = null as number | null;
+
+    if (isRollingComplete && !isRollingDie) {
+      timer = window.setTimeout(
+        () => set({ isRollingComplete: false }),
+        ROLL_TIME
+      );
+    }
+    return () => {
+      if (timer) {
+        window.clearTimeout(timer);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRollingComplete, isRollingDie]);
+
   return (
     <RollTheDieButtonStyles
       onMouseOut={() => setIsHovered(false)}
@@ -41,7 +62,9 @@ export function RollTheDieButton() {
             ...springReset,
             pointerEvents: isRollingDie ? "auto" : "none",
           }}
-          onClick={() => set({ isRollingDie: false })}
+          onClick={() => {
+            set({ isRollingDie: false });
+          }}
         >
           <Undo />
         </AnimatedIconButton>

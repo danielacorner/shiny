@@ -19,7 +19,10 @@ import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls
 import { useIsZoomed, useStore } from "../store/store";
 import { useFrame, useThree, Canvas } from "@react-three/fiber";
 import { ErrorBoundary } from "../ErrorBoundary";
-import { CAMERA_POSITION_INITIAL } from "../../utils/constants";
+import {
+  CAMERA_POSITION_INITIAL,
+  INITIAL_CAMERA_POSITION,
+} from "../../utils/constants";
 
 const CONTROLLED = false;
 const Canv = CONTROLLED ? Controls.Canvas : Canvas;
@@ -113,24 +116,30 @@ function D20AndPlane() {
   );
 }
 
-const TO = { X: 0, Y: 0, Z: 15 };
 const ANIMATION_SPEED = 0.07; // 0 to 1
 function useResetCameraWhenZoomed() {
   const isZoomed = useIsZoomed();
   const isRollingDie = useStore((s) => s.isRollingDie);
+  const isRollingComplete = useStore((s) => s.isRollingComplete);
   const camera = useThree(({ camera }) => camera);
 
+  const isResettingCameraPosition =
+    !isRollingDie && (isZoomed || isRollingComplete);
+
   useFrame(() => {
-    if (isZoomed && !isRollingDie) {
+    if (isResettingCameraPosition) {
       const delta = {
-        x: TO.X - camera.position.x,
-        y: TO.Y - camera.position.y,
-        z: TO.Z - camera.position.z,
+        x: INITIAL_CAMERA_POSITION.X - camera.position.x,
+        y: INITIAL_CAMERA_POSITION.Y - camera.position.y,
+        z: INITIAL_CAMERA_POSITION.Z - camera.position.z,
       };
 
-      camera.position.x = TO.X - delta.x * (1 - ANIMATION_SPEED);
-      camera.position.y = TO.Y - delta.y * (1 - ANIMATION_SPEED);
-      camera.position.z = TO.Z - delta.z * (1 - ANIMATION_SPEED);
+      camera.position.x =
+        INITIAL_CAMERA_POSITION.X - delta.x * (1 - ANIMATION_SPEED);
+      camera.position.y =
+        INITIAL_CAMERA_POSITION.Y - delta.y * (1 - ANIMATION_SPEED);
+      camera.position.z =
+        INITIAL_CAMERA_POSITION.Z - delta.z * (1 - ANIMATION_SPEED);
 
       camera.lookAt(0, 0, 0);
     }

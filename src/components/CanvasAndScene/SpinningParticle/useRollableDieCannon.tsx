@@ -3,12 +3,11 @@ import { useEffect, useMemo, useRef } from "react";
 import { useIsZoomedCamera, useStore } from "../../store/store";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { CAMERA_POSITION_INITIAL } from "../../../utils/constants";
+import { CAMERA_POSITION_INITIAL, ROLL_TIME } from "../../../utils/constants";
 import { Geometry } from "three-stdlib";
 import { useMount } from "../../../utils/hooks";
 
 const ZOOM_SPEED = 0.1;
-const ROLL_TIME = 3.5 * 1000;
 
 const RADIUS = 2;
 const DETAIL = 0;
@@ -98,9 +97,9 @@ export function useRollableDieCannon() {
     const y = camera.position.y + deltaY * ZOOM_SPEED;
     const deltaZ = targetPosition.z - camera.position.z;
     const z = camera.position.z + deltaZ * ZOOM_SPEED;
-    camera.position.set(x, y, z);
 
     if (isRollingComplete && isZoomedCamera) {
+      camera.position.set(x, y, z);
       camera.lookAt(0, 0, -1000);
     }
 

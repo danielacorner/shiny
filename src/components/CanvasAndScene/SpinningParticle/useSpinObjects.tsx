@@ -1,7 +1,6 @@
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useIsZoomed, useStore } from "../../store/store";
-import { usePrevious } from "../../../utils/hooks";
 import { useRotateWithScroll } from "../useRotateWithScroll";
 import {
   SPEED_Y,
@@ -24,30 +23,7 @@ export function useSpinObjects(
   const rotationSpeed = !isZoomed ? 0.12 : 0.05;
 
   // manually detect when we just went from isZoomed to !isZoomed
-  const [isZoomingOut, setIsZoomingOut] = useState(false);
-  const prevIsZoomed = usePrevious(isZoomed);
-  useEffect(() => {
-    let timer = null as number | null;
-    const nextIsZoomingOut = Boolean(prevIsZoomed && !isZoomed);
-    if (nextIsZoomingOut) {
-      timer = window.setTimeout(() => {
-        setIsZoomingOut(false);
-      }, 5 * 1000);
-      setIsZoomingOut(true);
-    }
-    // if we're zooming back in, setIsZoomingOut(false)
-    if (isZoomed) {
-      setIsZoomingOut(false);
-      if (timer) {
-        window.clearTimeout(timer);
-      }
-    }
-    return () => {
-      if (timer) {
-        window.clearTimeout(timer);
-      }
-    };
-  }, [prevIsZoomed, isZoomed]);
+  const isZoomingOut = useStore((s) => s.isZoomingOut);
 
   // spin the particle
   useFrame(({ clock }) => {
