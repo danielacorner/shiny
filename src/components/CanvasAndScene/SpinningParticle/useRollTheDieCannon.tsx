@@ -7,7 +7,7 @@ import { CAMERA_POSITION_INITIAL } from "../../../utils/constants";
 import { Geometry } from "three-stdlib";
 
 const ZOOM_SPEED = 0.1;
-const ROLL_TIME = 2 * 1000;
+const ROLL_TIME = 3.5 * 1000;
 
 const RADIUS = 2;
 const DETAIL = 0;
@@ -39,7 +39,7 @@ export function useRollTheDieCannon() {
   // }));
 
   // throw the die
-  const x = 1;
+  const x = Math.random() * 3;
   useEffect(() => {
     let timer = null as number | null;
     if (isRollingDie) {
@@ -91,7 +91,9 @@ export function useRollTheDieCannon() {
     const z = camera.position.z + deltaZ * ZOOM_SPEED;
     camera.position.set(x, y, z);
 
-    camera.lookAt(0, 0, -100);
+    if (isRollingComplete && isZoomedCamera) {
+      camera.lookAt(0, 0, -100);
+    }
 
     if (isRollingComplete && !isZoomedCamera) {
       // move the d20 back to starting position
