@@ -110,19 +110,21 @@ export default function SpinningParticle() {
 
   const isRollingDie = useStore((s) => s.isRollingDie);
 
+  const isD20Opaque = isRollingDie || isZoomed;
+
   const springProps = useSpring({
     scale: [scale, scale, scale],
     scaleWireMesh: [scaleWireMesh, scaleWireMesh, scaleWireMesh],
-    opacityTetrahedron: !isZoomed ? 0.8 : 0.8,
-    opacityIcosahedron: !isZoomed ? 0.2 : 0.2,
-    opacityD20: isRollingDie ? 1 : !isZoomed ? 0.6 : 0.2,
-    opacityInnerIcosahedron: !isZoomed ? 0 : 0,
-    metalnessD20: !isZoomed ? metalness : 0.99,
-    roughnessD20: !isZoomed ? roughness : 0.15,
-    roughness: !isZoomed ? 0.4 : 0,
-    config: !isZoomed ? springConfigZoomedOut : springonfigZoomedIn,
+    opacityTetrahedron: !isD20Opaque ? 0.8 : 0.8,
+    opacityIcosahedron: !isD20Opaque ? 0.2 : 0.2,
+    opacityD20: isRollingDie ? 1 : !isD20Opaque ? 0.6 : 0.2,
+    opacityInnerIcosahedron: !isD20Opaque ? 0 : 0,
+    metalnessD20: !isD20Opaque ? metalness : 0.99,
+    roughnessD20: !isD20Opaque ? roughness : 0.15,
+    roughness: !isD20Opaque ? 0.4 : 0,
+    config: !isD20Opaque ? springConfigZoomedOut : springonfigZoomedIn,
     onRest: (spring) => {
-      if (isZoomed) {
+      if (isD20Opaque) {
         setIsWireframe(true);
         set({ isScrollable: true });
       }

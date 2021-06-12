@@ -2,7 +2,7 @@ import { Box, useDetectGPU } from "@react-three/drei";
 import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
-import { useIsZoomed } from "../store/store";
+import { useIsZoomed, useStore } from "../store/store";
 import RGBLights from "./RGBLights";
 import { useControl } from "react-three-gui";
 
@@ -34,6 +34,8 @@ function LightFollowsMouse() {
   const box = useRef(null as any);
   const spotlightBox = useRef(null as any);
   const isZoomed = useIsZoomed();
+  const isRollingDie = useStore((s) => s.isRollingDie);
+  const isD20Opaque = isRollingDie || isZoomed;
 
   const { viewport, mouse } = useThree();
 
@@ -82,10 +84,11 @@ function LightFollowsMouse() {
     max: 5,
     value: 0,
   });
+
   const springProps = useSpring({
-    spotlightIntensity: !isZoomed ? spotlightIntensity : 10,
-    spotlight2Intensity: !isZoomed ? 0 : spotlight2Intensity,
-    pointlightIntensity: !isZoomed ? pointlightIntensity : 6,
+    spotlightIntensity: !isD20Opaque ? spotlightIntensity : 10,
+    spotlight2Intensity: !isD20Opaque ? 0 : spotlight2Intensity,
+    pointlightIntensity: !isD20Opaque ? pointlightIntensity : 6,
   });
 
   const gpuInfo = useDetectGPU();
