@@ -67,7 +67,7 @@ function Scene() {
   const turbidity = useGetTurbidityByTimeOfDay();
   const isZoomed = useIsZoomed();
   useResetCameraWhenZoomed();
-
+  const isRollingDie = useStore((s) => s.isRollingDie);
   return (
     <>
       {false && process.env.NODE_ENV === "development" ? (
@@ -83,12 +83,11 @@ function Scene() {
         mieDirectionalG={1}
         turbidity={turbidity}
       />
-      <Physics {...PHYSICS_PROPS}>
+      <Physics
+        {...{ ...PHYSICS_PROPS, gravity: [0, isRollingDie ? -1 : 0, 0] }}
+      >
         <ErrorBoundary component={<Html>❌ rollTheDieCannonRef</Html>}>
           <Thing />
-          <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
-            <SpinningParticle />
-          </ErrorBoundary>
         </ErrorBoundary>
       </Physics>
     </>
@@ -96,17 +95,15 @@ function Scene() {
 }
 function Thing() {
   // const rollTheDieCannonRef = null;
-  // const rollTheDieCannonRef = useRollTheDieCannon();
+  const rollTheDieCannonRef = useRollTheDieCannon();
 
   // const icosahedronPhysicsRef = null;
-  const [icosahedronPhysicsRef] = useSphere(() => ({
-    mass: 1,
-    position: [0, 0, 0],
-  }));
+
   return (
-    <mesh ref={icosahedronPhysicsRef}>
-      <boxBufferGeometry args={[1, 1, 1]} />
-      <meshBasicMaterial color={"white"} />
+    <mesh ref={rollTheDieCannonRef}>
+      <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
+        <SpinningParticle />
+      </ErrorBoundary>
     </mesh>
   );
 }
