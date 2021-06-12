@@ -21,6 +21,7 @@ export function useSyncStoreStateToLS(stateKey: keyof GlobalStateType) {
 
 type GlobalStateType = {
   isZoomed: boolean;
+  isRollingDie: boolean;
   isSpinning: boolean;
   isScrolling: boolean;
   setIsScrolling: (newState: boolean) => any;
@@ -40,6 +41,7 @@ type GlobalStateType = {
 // with typescript https://react-tracked.js.org/docs/tutorial-zustand-01/
 export const useStore = create<GlobalStateType>(
   (set): GlobalStateType => ({
+    isRollingDie: false,
     isSpinning: false,
     isScrolling: false,
     setIsScrolling: (val) => set({ isScrolling: val }),

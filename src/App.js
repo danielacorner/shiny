@@ -7,12 +7,14 @@ import { useSetAnimationStepOnScroll } from "./components/store/useSetAnimationS
 import { ScrollingOverlaySimple } from "./components/ScrollingOverlay";
 import { InfoButton } from "./components/controls/InfoButton";
 import { SoundButton } from "./components/controls/SoundButton";
+import { RollTheDieButton } from "./components/controls/RollTheDieButton";
 import { useStore } from "./components/store/store";
 
 export default function App() {
   useSetAnimationStepOnScroll();
   const gpuInfo = useDetectGPU();
   const isInfoOverlayVisible = useStore((s) => s.isInfoOverlayVisible);
+
   return (
     <Layout>
       Hellooo
@@ -23,6 +25,7 @@ export default function App() {
         <ScrollingOverlaySimple />
         <InfoButton />
         <SoundButton />
+        <RollTheDieButton />
         {isInfoOverlayVisible && (
           <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
         )}
@@ -41,7 +44,7 @@ const BackgroundStyles = styled.div`
     background: hsla(0, 0%, 100%, 0.5);
     position: fixed;
     top: 0;
-    right: 0;
+    right: 25%;
     left: 50%;
   }
 `;

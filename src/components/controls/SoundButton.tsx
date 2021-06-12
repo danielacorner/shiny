@@ -3,10 +3,13 @@ import { IconButton, Tooltip } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import styled from "styled-components/macro";
 import { useState } from "react";
+import { useLocalStorageState } from "../../utils/hooks";
 
 /** show or hide the info overlay */
 export function SoundButton() {
-  const [isAudioPlaying, setIsAudioPlaying] = useState(
+  const [isAudioPlaying, setIsAudioPlaying] = useLocalStorageState(
+    // const [isAudioPlaying, setIsAudioPlaying] = useState(
+    "isAudioPlaying",
     false // As of Chrome 66, videos must be muted in order to play automatically https://www.npmjs.com/package/react-player
   );
   const [isHovered, setIsHovered] = useState(false);
