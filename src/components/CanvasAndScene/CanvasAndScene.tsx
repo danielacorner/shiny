@@ -10,13 +10,12 @@ import {
   Stats,
 } from "@react-three/drei";
 import { Lighting } from "../Lighting/Lighting";
-import { Physics, usePlane } from "@react-three/cannon";
+import { Physics, usePlane, Debug } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
 import SpinScene from "../SpinScene";
 import SpinningParticle from "./SpinningParticle/SpinningParticle";
 import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
-// import ScrollingOverlay from "../ScrollingOverlay";
 import { useIsZoomed, useStore } from "../store/store";
 import { useFrame, useThree, Canvas } from "@react-three/fiber";
 import { ErrorBoundary } from "../ErrorBoundary";
@@ -86,11 +85,11 @@ function Scene() {
       <Physics
         {...{ ...PHYSICS_PROPS, gravity: [0, 0, isRollingDie ? -30 : 0] }}
       >
-        {/* <Debug color="black"> */}
-        <ErrorBoundary component={<Html>❌ rollTheDieCannonRef</Html>}>
-          <D20AndPlane />
-        </ErrorBoundary>
-        {/* </Debug> */}
+        <Debugger>
+          <ErrorBoundary component={<Html>❌ rollTheDieCannonRef</Html>}>
+            <D20AndPlane />
+          </ErrorBoundary>
+        </Debugger>
       </Physics>
     </>
   );
@@ -171,4 +170,12 @@ function useGetTurbidityByTimeOfDay() {
   });
 
   return turbidity;
+}
+
+function Debugger({ children }) {
+  return process.env.NODE_ENV === "development" ? (
+    <Debug color="black">{children}</Debug>
+  ) : (
+    <>{children}</>
+  );
 }

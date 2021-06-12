@@ -64,9 +64,11 @@ export function useSpinObjects(
       ref2.current.rotation.y - Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
 
     // ref3 is the d20
-    const targetX = Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
-    const targetY =
-      ref3.current.rotation.y + Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
+    const targetX = isRollingDie ? 0 : Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
+    const targetY = isRollingDie
+      ? 0
+      : ref3.current.rotation.y + Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
+    const targetZ = isRollingDie ? 0 : ref3.current.rotation.z;
     if (isZoomingOut) {
       // move in a spring animation from [x,y,z] to the time-based sine curve
       const deltaX = targetX - ref3.current.rotation.x;
@@ -92,6 +94,7 @@ export function useSpinObjects(
       // (time-based sine curve)
       ref3.current.rotation.x = targetX;
       ref3.current.rotation.y = targetY;
+      ref3.current.rotation.z = targetZ;
     }
 
     ref4.current.rotation.x = -Math.sin(time * SPEED_Y) * AMPLITUDE_Y;

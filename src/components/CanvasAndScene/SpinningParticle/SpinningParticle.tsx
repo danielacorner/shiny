@@ -7,7 +7,7 @@ import D20_STAR from "../../GLTFs/D20_star";
 import { useControl } from "react-three-gui";
 import { useSpinObjects } from "./useSpinObjects";
 import { useHoverAnimation } from "./useHoverAnimation";
-import { useRollTheDieCannon } from "./useRollTheDieCannon";
+import { useRollableDieCannon } from "./useRollableDieCannon";
 
 export const SPEED_Y = 0.5;
 export const SPEED_X = 0.2;
@@ -40,10 +40,11 @@ const D20_STAR_ROTATION = {
 export default function SpinningParticle() {
   const scalePct = 1;
 
+  const [rollTheDieCannonRef] = useRollableDieCannon();
+
   const ref1 = useRef(null as any);
   const ref2 = useRef(null as any);
-  const rollTheDieCannonRef = useRollTheDieCannon();
-  // const ref3 = useRef(null as any);
+  const ref3 = useRef(null as any);
   const ref4 = useRef(null as any);
   const ref5 = useRef(null as any);
 
@@ -69,7 +70,7 @@ export default function SpinningParticle() {
 
   // const rotation = { x: degToRad(x), y: degToRad(y), z: degToRad(z) };
 
-  useSpinObjects(ref1, ref2, rollTheDieCannonRef, ref4, ref5);
+  useSpinObjects(ref1, ref2, ref3, ref4, ref5);
 
   // const opacity = useControl("opacity", { // ? not working
   //   value: 0.78,
@@ -167,19 +168,19 @@ export default function SpinningParticle() {
       </mesh>
       {/* icosahedron + D20 */}
       {/* rollable */}
-      {/* <mesh ref={ref3}> */}
       <mesh ref={rollTheDieCannonRef}>
-        <mesh>
-          <icosahedronBufferGeometry args={[scalePct * 1, 0]} />
-          <animated.meshPhysicalMaterial
-            {...COMMON_MATERIAL_PROPS}
-            opacity={springProps.opacityIcosahedron}
-            roughness={springProps.roughness}
-            metalness={0.9}
-          />
-        </mesh>
-        {/* TODO: need to fade in a non-transparent one too when isD20Active??? */}
-        {/* <D20
+        <mesh ref={ref3}>
+          <mesh>
+            <icosahedronBufferGeometry args={[scalePct * 1, 0]} />
+            <animated.meshPhysicalMaterial
+              {...COMMON_MATERIAL_PROPS}
+              opacity={springProps.opacityIcosahedron}
+              roughness={springProps.roughness}
+              metalness={0.9}
+            />
+          </mesh>
+          {/* TODO: need to fade in a non-transparent one too when isD20Active??? */}
+          {/* <D20
           scale={[d20Scale, d20Scale, d20Scale]}
           rotation={[D20_ROTATION.x, D20_ROTATION.y, D20_ROTATION.z]}
           depthTest={true}
@@ -200,29 +201,29 @@ export default function SpinningParticle() {
             color="white"
           />
         </D20> */}
-        <D20_STAR
-          scale={[d20StarScale, d20StarScale, d20StarScale]}
-          rotation={[
-            D20_STAR_ROTATION.x,
-            D20_STAR_ROTATION.y,
-            D20_STAR_ROTATION.z,
-          ]}
-        >
-          <animated.meshPhysicalMaterial
-            {...COMMON_MATERIAL_PROPS}
-            transparent={!isZoomed}
-            depthTest={isZoomed}
-            depthWrite={true}
-            opacity={springProps.opacityD20}
-            metalness={springProps.metalnessD20}
-            roughness={springProps.roughnessD20}
-            clearcoat={0.73}
-            clearcoatRoughness={0.4}
-            color="silver"
-          />
-        </D20_STAR>
+          <D20_STAR
+            scale={[d20StarScale, d20StarScale, d20StarScale]}
+            rotation={[
+              D20_STAR_ROTATION.x,
+              D20_STAR_ROTATION.y,
+              D20_STAR_ROTATION.z,
+            ]}
+          >
+            <animated.meshPhysicalMaterial
+              {...COMMON_MATERIAL_PROPS}
+              transparent={!isZoomed}
+              depthTest={isZoomed}
+              depthWrite={true}
+              opacity={springProps.opacityD20}
+              metalness={springProps.metalnessD20}
+              roughness={springProps.roughnessD20}
+              clearcoat={0.73}
+              clearcoatRoughness={0.4}
+              color="silver"
+            />
+          </D20_STAR>
+        </mesh>
       </mesh>
-      {/* </mesh> */}
       <animated.mesh scale={springProps.scaleWireMesh} ref={ref4}>
         <icosahedronBufferGeometry args={[scalePct * 4, 1]} />
         <animated.meshPhysicalMaterial

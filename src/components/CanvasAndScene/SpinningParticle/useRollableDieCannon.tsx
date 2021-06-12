@@ -1,10 +1,11 @@
 import { useConvexPolyhedron } from "@react-three/cannon";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useIsZoomedCamera, useStore } from "../../store/store";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { CAMERA_POSITION_INITIAL } from "../../../utils/constants";
 import { Geometry } from "three-stdlib";
+import { useMount } from "../../../utils/hooks";
 
 const ZOOM_SPEED = 0.1;
 const ROLL_TIME = 3.5 * 1000;
@@ -12,7 +13,7 @@ const ROLL_TIME = 3.5 * 1000;
 const RADIUS = 2;
 const DETAIL = 0;
 
-export function useRollTheDieCannon() {
+export function useRollableDieCannon() {
   const isRollingDie = useStore((s) => s.isRollingDie);
   const isRollingComplete = useStore((s) => s.isRollingComplete);
   const isZoomedCamera = useIsZoomedCamera();
@@ -41,6 +42,9 @@ export function useRollTheDieCannon() {
   // throw the die
   const x = Math.random() * 3;
   useEffect(() => {
+    // reset the rotation before & after rolling
+    api.rotation.set(0, 0, 0);
+
     let timer = null as number | null;
     if (isRollingDie) {
       set({ isRollingComplete: false });
@@ -62,12 +66,17 @@ export function useRollTheDieCannon() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRollingDie]);
 
+  const d20Position = useRef([0, 0, 0]);
+  useMount(() => {
+    api.position.subscribe((v) => (d20Position.current = v));
+  });
+
   // zoom in the camera after we roll
   useFrame(({ camera }) => {
-    const d20Position = icosahedronPhysicsRef.current.position;
+    // const d20Position = icosahedronPhysicsRef.current.position;
     const cameraPositionZoomed = {
-      x: d20Position.x,
-      y: d20Position.y,
+      x: d20Position.current[0],
+      y: d20Position.current[1],
       // x: 0,
       // y: -0,
       z: -0,
@@ -92,21 +101,21 @@ export function useRollTheDieCannon() {
     camera.position.set(x, y, z);
 
     if (isRollingComplete && isZoomedCamera) {
-      camera.lookAt(0, 0, -100);
+      camera.lookAt(0, 0, -1000);
     }
 
     if (isRollingComplete && !isZoomedCamera) {
       // move the d20 back to starting position
       const [pX, pY, pZ] = [
-        d20Position.x * 0.9,
-        d20Position.y * 0.9,
-        d20Position.z * 0.9,
+        d20Position.current[0] * 0.9,
+        d20Position.current[1] * 0.9,
+        d20Position.current[2] * 0.9,
       ];
       api.position.set(pX, pY, pZ);
     }
   });
 
-  return icosahedronPhysicsRef;
+  return [icosahedronPhysicsRef, api];
 }
 
 /**
