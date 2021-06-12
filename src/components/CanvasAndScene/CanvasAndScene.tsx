@@ -19,7 +19,6 @@ import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls
 // import ScrollingOverlay from "../ScrollingOverlay";
 import { useIsZoomed, useStore } from "../store/store";
 import { useFrame, useThree, Canvas } from "@react-three/fiber";
-import { useRollTheDieCannon } from "./SpinningParticle/useRollTheDieCannon";
 import { ErrorBoundary } from "../ErrorBoundary";
 import { CAMERA_POSITION_INITIAL } from "../../utils/constants";
 
@@ -87,16 +86,16 @@ function Scene() {
       <Physics
         {...{ ...PHYSICS_PROPS, gravity: [0, 0, isRollingDie ? -30 : 0] }}
       >
+        {/* <Debug color="black"> */}
         <ErrorBoundary component={<Html>❌ rollTheDieCannonRef</Html>}>
-          <RollableD20 />
+          <D20AndPlane />
         </ErrorBoundary>
+        {/* </Debug> */}
       </Physics>
     </>
   );
 }
-function RollableD20() {
-  // const rollTheDieCannonRef = null;
-  const rollTheDieCannonRef = useRollTheDieCannon();
+function D20AndPlane() {
   const [planeRef] = usePlane(() => ({
     rotation: [0, 0, 0],
     position: [0, 0, -8],
@@ -107,11 +106,9 @@ function RollableD20() {
 
   return (
     <mesh>
-      <mesh ref={rollTheDieCannonRef}>
-        <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
-          <SpinningParticle />
-        </ErrorBoundary>
-      </mesh>
+      <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
+        <SpinningParticle />
+      </ErrorBoundary>
       <mesh ref={planeRef} />
     </mesh>
   );

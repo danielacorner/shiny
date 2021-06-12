@@ -7,6 +7,7 @@ import D20_STAR from "../../GLTFs/D20_star";
 import { useControl } from "react-three-gui";
 import { useSpinObjects } from "./useSpinObjects";
 import { useHoverAnimation } from "./useHoverAnimation";
+import { useRollTheDieCannon } from "./useRollTheDieCannon";
 
 export const SPEED_Y = 0.5;
 export const SPEED_X = 0.2;
@@ -41,7 +42,8 @@ export default function SpinningParticle() {
 
   const ref1 = useRef(null as any);
   const ref2 = useRef(null as any);
-  const ref3 = useRef(null as any);
+  const rollTheDieCannonRef = useRollTheDieCannon();
+  // const ref3 = useRef(null as any);
   const ref4 = useRef(null as any);
   const ref5 = useRef(null as any);
 
@@ -67,7 +69,7 @@ export default function SpinningParticle() {
 
   // const rotation = { x: degToRad(x), y: degToRad(y), z: degToRad(z) };
 
-  useSpinObjects(ref1, ref2, ref3, ref4, ref5);
+  useSpinObjects(ref1, ref2, rollTheDieCannonRef, ref4, ref5);
 
   // const opacity = useControl("opacity", { // ? not working
   //   value: 0.78,
@@ -115,10 +117,12 @@ export default function SpinningParticle() {
   const springProps = useSpring({
     scale: [scale, scale, scale],
     scaleWireMesh: [scaleWireMesh, scaleWireMesh, scaleWireMesh],
-    opacityTetrahedron: !isD20Opaque ? 0.8 : 0.8,
-    opacityIcosahedron: !isD20Opaque ? 0.2 : 0.2,
+    opacityTetrahedron: isRollingDie ? 0 : !isD20Opaque ? 0.8 : 0.8,
+    opacityIcosahedron: isRollingDie ? 0 : !isD20Opaque ? 0.2 : 0.2,
+    opacityOctahedron: isRollingDie ? 0 : 0.6,
     opacityD20: isRollingDie ? 1 : !isD20Opaque ? 0.6 : 0.2,
     opacityInnerIcosahedron: !isD20Opaque ? 0 : 0,
+    opacityWireframe: isRollingDie ? 0 : isWireframe ? 0.05 : 0.08,
     metalnessD20: isRollingDie ? 0.99 : !isD20Opaque ? metalness : 0.99,
     roughnessD20: isRollingDie ? 0.15 : !isD20Opaque ? roughness : 0.15,
     roughness: !isD20Opaque ? 0.4 : 0,
@@ -155,14 +159,16 @@ export default function SpinningParticle() {
       {/* octahedron */}
       <mesh ref={ref2}>
         <octahedronBufferGeometry args={[scalePct * 0.5, 0]} />
-        <meshPhysicalMaterial
+        <animated.meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
-          opacity={0.6}
+          opacity={springProps.opacityOctahedron}
           depthTest={true}
         />
       </mesh>
       {/* icosahedron + D20 */}
-      <mesh ref={ref3}>
+      {/* rollable */}
+      {/* <mesh ref={ref3}> */}
+      <mesh ref={rollTheDieCannonRef}>
         <mesh>
           <icosahedronBufferGeometry args={[scalePct * 1, 0]} />
           <animated.meshPhysicalMaterial
@@ -216,13 +222,14 @@ export default function SpinningParticle() {
           />
         </D20_STAR>
       </mesh>
+      {/* </mesh> */}
       <animated.mesh scale={springProps.scaleWireMesh} ref={ref4}>
         <icosahedronBufferGeometry args={[scalePct * 4, 1]} />
-        <meshPhysicalMaterial
+        <animated.meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
           color="tomato"
           wireframe={isWireframe}
-          opacity={isWireframe ? 0.05 : 0.08}
+          opacity={springProps.opacityWireframe}
           depthTest={true}
         />
       </animated.mesh>

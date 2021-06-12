@@ -1,12 +1,16 @@
-import { useBox } from "@react-three/cannon";
-import { useEffect } from "react";
+import { useConvexPolyhedron } from "@react-three/cannon";
+import { useEffect, useMemo } from "react";
 import { useIsZoomedCamera, useStore } from "../../store/store";
-// import * as THREE from "three";
+import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { CAMERA_POSITION_INITIAL } from "../../../utils/constants";
+import { Geometry } from "three-stdlib";
 
 const ZOOM_SPEED = 0.1;
 const ROLL_TIME = 2 * 1000;
+
+const RADIUS = 2;
+const DETAIL = 0;
 
 export function useRollTheDieCannon() {
   const isRollingDie = useStore((s) => s.isRollingDie);
@@ -14,18 +18,25 @@ export function useRollTheDieCannon() {
   const isZoomedCamera = useIsZoomedCamera();
 
   const set = useStore((s) => s.set);
-  // const [icosahedronPhysicsRef, api] = useConvexPolyhedron(() => ({
-  //   mass: 1, // approximate mass using volume of a sphere equation
-  //   // position,
-  //   // onCollide: handleCollide(unmount, setVirusHp),
-  //   // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronBufferGeometry
-  //   args: new THREE.IcosahedronGeometry(1, 1),
-  // }));
 
-  const [icosahedronPhysicsRef, api] = useBox(() => ({
-    mass: 1,
-    position: [0, 0, 0],
+  const geo = useMemo(
+    () => toConvexProps(new THREE.IcosahedronBufferGeometry(RADIUS, DETAIL)),
+    []
+  );
+
+  const [icosahedronPhysicsRef, api] = useConvexPolyhedron(() => ({
+    mass: 1, // approximate mass using volume of a sphere equation
+    // position,
+    // rotation: [0, 0, 0],
+    // onCollide: handleCollide(unmount, setVirusHp),
+    // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
+    args: geo as any,
   }));
+
+  // const [icosahedronPhysicsRef, api] = useBox(() => ({
+  //   mass: 1,
+  //   position: [0, 0, 0],
+  // }));
 
   // throw the die
   const x = 1;
@@ -94,4 +105,16 @@ export function useRollTheDieCannon() {
   });
 
   return icosahedronPhysicsRef;
+}
+
+/**
+ * Returns legacy geometry vertices, faces for ConvP
+ * @param {THREE.BufferGeometry} bufferGeometry
+ */
+function toConvexProps(bufferGeometry) {
+  const geo = new Geometry().fromBufferGeometry(bufferGeometry);
+  // Merge duplicate vertices resulting from glTF export.
+  // Cannon assumes contiguous, closed meshes to work
+  geo.mergeVertices();
+  return [geo.vertices.map((v) => [v.x, v.y, v.z]), geo.faces.map((f) => [f.a, f.b, f.c]), []]; // prettier-ignore
 }
