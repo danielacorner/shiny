@@ -2,7 +2,7 @@ import * as THREE from "three";
 export const INITIAL_ROTATION = { x: 1, y: 2, z: 3 };
 const degToRad = (THREE as any).Math.degToRad;
 
-export const STEP11 = { x: 240.4, y: 304.8, z: 146.4 };
+export const STEP11 = { x: 235.2, y: 304.8, z: 152.4 };
 export const STEP11_RAD = Object.fromEntries(
   Object.entries(STEP11).map(([x, degrees]) => [x, degToRad(degrees)])
 );
@@ -19,7 +19,7 @@ export const ROTATION_STEPS_DEG = [
   { x: 42, y: 150, z: 66 }, // 13
   { x: 50.4, y: 230.4, z: 152.4 }, // 12
   STEP11, // 11
-  // { x: 240.4, y: 304.8, z: 146.4 }, // 11
+  // { x: 235.2, y: 304.8, z: 152.4 }, // 11
   { x: 230.4, y: 235.2, z: 326.4 }, // 10
   { x: 230.4, y: 232.8, z: 146.4 }, // 9
   { x: 42, y: 30, z: 252 }, // 8

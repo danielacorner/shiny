@@ -16,7 +16,7 @@ export function useRotateWithScroll() {
     type: "number",
     min: 0,
     max: 360,
-    value: 240.4,
+    value: 235.2,
   });
   const y = useControl("yyy", {
     type: "number",
@@ -28,7 +28,7 @@ export function useRotateWithScroll() {
     type: "number",
     min: 0,
     max: 360,
-    value: 146.4,
+    value: 152.4,
   });
 
   const animationStep = useAnimationStep();
