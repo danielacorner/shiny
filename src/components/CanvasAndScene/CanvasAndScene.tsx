@@ -8,9 +8,10 @@ import {
   Sky,
   Stars,
   Stats,
+  Plane,
 } from "@react-three/drei";
 import { Lighting } from "../Lighting/Lighting";
-import { Physics, useSphere } from "@react-three/cannon";
+import { Physics, usePlane, useSphere } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
 import SpinScene from "../SpinScene";
 import SpinningParticle from "./SpinningParticle/SpinningParticle";
@@ -84,18 +85,24 @@ function Scene() {
         turbidity={turbidity}
       />
       <Physics
-        {...{ ...PHYSICS_PROPS, gravity: [0, isRollingDie ? -1 : 0, 0] }}
+        {...{ ...PHYSICS_PROPS, gravity: [0, 0, isRollingDie ? -30 : 0] }}
       >
         <ErrorBoundary component={<Html>❌ rollTheDieCannonRef</Html>}>
-          <Thing />
+          <RollableD20 />
         </ErrorBoundary>
       </Physics>
     </>
   );
 }
-function Thing() {
+function RollableD20() {
   // const rollTheDieCannonRef = null;
   const rollTheDieCannonRef = useRollTheDieCannon();
+  const [planeRef] = usePlane(() => ({
+    rotation: [0, 0, 0],
+    position: [0, 0, -10],
+    // color: "white",
+    // ...props,
+  }));
 
   // const icosahedronPhysicsRef = null;
 
@@ -104,6 +111,7 @@ function Thing() {
       <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
         <SpinningParticle />
       </ErrorBoundary>
+      <Plane ref={planeRef} args={[2, 2]} color={"white"} {...({} as any)} />
     </mesh>
   );
 }

@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useState } from "react";
-import { useIsZoomed } from "../../store/store";
+import { useIsZoomed, useStore } from "../../store/store";
 import { usePrevious } from "../../../utils/hooks";
 import { useRotateWithScroll } from "../useRotateWithScroll";
 import {
@@ -18,6 +18,7 @@ export function useSpinObjects(
   ref5: React.MutableRefObject<any>
 ) {
   const isZoomed = useIsZoomed();
+  const isRollingDie = useStore((s) => s.isRollingDie);
   const d20Rotation = useRotateWithScroll();
 
   const rotationSpeed = !isZoomed ? 0.12 : 0.05;
@@ -51,7 +52,7 @@ export function useSpinObjects(
   // spin the particle
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
-    if (!ref1.current) {
+    if (!ref1.current || isRollingDie) {
       return;
     }
     ref1.current.rotation.x = -Math.sin(time * SPEED_Y) * AMPLITUDE_Y;

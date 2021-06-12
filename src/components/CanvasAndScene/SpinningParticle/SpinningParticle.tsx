@@ -108,12 +108,14 @@ export default function SpinningParticle() {
   const springConfigZoomedOut = { mass: 2, tension: 80, friction: 70 };
   const springonfigZoomedIn = { mass: 1, tension: 80, frction: 70 };
 
+  const isRollingDie = useStore((s) => s.isRollingDie);
+
   const springProps = useSpring({
     scale: [scale, scale, scale],
     scaleWireMesh: [scaleWireMesh, scaleWireMesh, scaleWireMesh],
     opacityTetrahedron: !isZoomed ? 0.8 : 0.8,
     opacityIcosahedron: !isZoomed ? 0.2 : 0.2,
-    opacityD20: !isZoomed ? 0.6 : 0.2,
+    opacityD20: isRollingDie ? 1 : !isZoomed ? 0.6 : 0.2,
     opacityInnerIcosahedron: !isZoomed ? 0 : 0,
     metalnessD20: !isZoomed ? metalness : 0.99,
     roughnessD20: !isZoomed ? roughness : 0.15,

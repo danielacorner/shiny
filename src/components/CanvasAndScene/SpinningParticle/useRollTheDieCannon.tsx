@@ -13,21 +13,21 @@ export function useRollTheDieCannon() {
   //   args: new THREE.IcosahedronGeometry(1, 1),
   // }));
 
-  const [icosahedronPhysicsRef] = useBox(() => ({
+  const [icosahedronPhysicsRef, api] = useBox(() => ({
     mass: 1,
     position: [0, 0, 0],
   }));
 
   // throw the die
-  // useEffect(() => {
-  //   if (isRollingDie) {
-  //     const impulse = [1, 1, 1];
-  //     const worldPoint = [0.5, 1, 1];
-  //     api.applyImpulse(impulse, worldPoint);
-  //   } else {
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isRollingDie]);
+  useEffect(() => {
+    if (isRollingDie) {
+      const impulse = [0, 0, -10];
+      const worldPoint = [0, 0, 10];
+      api.applyImpulse(impulse, worldPoint);
+    } else {
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRollingDie]);
 
   return icosahedronPhysicsRef;
 }
