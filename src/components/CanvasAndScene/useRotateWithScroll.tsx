@@ -3,25 +3,47 @@ import { useAnimationStep } from "../store/store";
 import {
   INITIAL_ROTATION,
   ROTATION_STEPS,
-  useRotationSteps,
+  STEP11,
 } from "../../utils/constants";
 import isEqual from "lodash.isequal";
+import { useControl } from "react-three-gui";
 
 export function useRotateWithScroll() {
+  const x = useControl("xxx", {
+    type: "number",
+    min: -100,
+    max: 100,
+    value: 240.4,
+  });
+  const y = useControl("yyy", {
+    type: "number",
+    min: -100,
+    max: 100,
+    value: 304.8,
+  });
+  const z = useControl("zzz", {
+    type: "number",
+    min: -100,
+    max: 100,
+    value: 146.4,
+  });
+
   const animationStep = useAnimationStep();
 
   const [rotation, setRotation] = useState(ROTATION_STEPS[0]);
-  const rotationSteps = useRotationSteps();
   useEffect(() => {
     const rotationStep = animationStep - 2; // starting position
-    const rotation = rotationSteps[rotationStep] || INITIAL_ROTATION;
+    const rotation = ROTATION_STEPS[rotationStep] || INITIAL_ROTATION;
     if (isEqual(rotation, INITIAL_ROTATION)) {
       return;
       // setRotation()
+    } else if (isEqual(rotation, STEP11)) {
+      setRotation({ x, y, z });
     } else {
       setRotation(rotation);
     }
-  }, [animationStep, rotationSteps]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationStep]);
 
   return rotation as { x: number; y: number; z: number };
 }
