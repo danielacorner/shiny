@@ -1,7 +1,7 @@
-import { useBox, useConvexPolyhedron } from "@react-three/cannon";
-import { useEffect, useState } from "react";
+import { useBox } from "@react-three/cannon";
+import { useEffect } from "react";
 import { useIsZoomedCamera, useStore } from "../../store/store";
-import * as THREE from "three";
+// import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { CAMERA_POSITION_INITIAL } from "../../../utils/constants";
 
