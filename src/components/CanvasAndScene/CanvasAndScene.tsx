@@ -1,6 +1,7 @@
 import React, { Suspense, useState } from "react";
 import { useWindowSize, useInterval } from "../../utils/hooks";
 import * as THREE from "three";
+import { Html } from "@react-three/drei";
 import {
   Environment,
   OrbitControls,
@@ -12,12 +13,14 @@ import { Lighting } from "../Lighting/Lighting";
 import { Physics } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
 import SpinScene from "../SpinScene";
-import SpinningParticle from "./SpinningParticle";
+import SpinningParticle from "./SpinningParticle/SpinningParticle";
 import { Controls } from "react-three-gui";
 import { DeviceOrientationOrbitControls } from "./DeviceOrientationOrbitControls";
 // import ScrollingOverlay from "../ScrollingOverlay";
 import { useIsZoomed, useStore } from "../store/store";
 import { useFrame, useThree } from "@react-three/fiber";
+import { useRollTheDieCannon } from "./SpinningParticle/useRollTheDieCannon";
+import { ErrorBoundary } from "../ErrorBoundary";
 
 export default function CanvasAndScene() {
   const windowSize = useWindowSize();
@@ -41,10 +44,12 @@ export default function CanvasAndScene() {
           style={{ height: windowSize.height, width: windowSize.width }}
         >
           <SpinScene>
-            <mesh scale={[1, 1, 1]}>
-              <Scene />
-              {isInfoOverlayVisible && <Stats />}
-            </mesh>
+            <ErrorBoundary component={<Html>❌ Scene</Html>}>
+              <mesh scale={[1, 1, 1]}>
+                <Scene />
+                {isInfoOverlayVisible && <Stats />}
+              </mesh>
+            </ErrorBoundary>
           </SpinScene>
           <Lighting />
         </Controls.Canvas>
@@ -60,6 +65,8 @@ function Scene() {
   const turbidity = useGetTurbidityByTimeOfDay();
   const isZoomed = useIsZoomed();
   useResetCameraWhenZoomed();
+  const rollTheDieCannonRef = useRollTheDieCannon();
+
   return (
     <Physics {...PHYSICS_PROPS}>
       <>
@@ -76,7 +83,14 @@ function Scene() {
           mieDirectionalG={1}
           turbidity={turbidity}
         />
-        <SpinningParticle />
+        <ErrorBoundary component={<Html>❌ rollTheDieCannonRef</Html>}>
+          <mesh ref={rollTheDieCannonRef}>
+            <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
+              <SpinningParticle />
+            </ErrorBoundary>
+          </mesh>
+        </ErrorBoundary>
+
         {/* {process.env.NODE_ENV === "development" && <ScrollingOverlay />} */}
       </>
     </Physics>

@@ -9,6 +9,7 @@ import { InfoButton } from "./components/controls/InfoButton";
 import { SoundButton } from "./components/controls/SoundButton";
 import { RollTheDieButton } from "./components/controls/RollTheDieButton";
 import { useStore } from "./components/store/store";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 export default function App() {
   useSetAnimationStepOnScroll();
@@ -16,21 +17,23 @@ export default function App() {
   const isInfoOverlayVisible = useStore((s) => s.isInfoOverlayVisible);
 
   return (
-    <Layout>
-      Hellooo
-      <BackgroundStyles>
-        <ScrollHandler>
-          <CanvasAndScene />
-        </ScrollHandler>
-        <ScrollingOverlaySimple />
-        <InfoButton />
-        <SoundButton />
-        <RollTheDieButton />
-        {isInfoOverlayVisible && (
-          <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
-        )}
-      </BackgroundStyles>
-    </Layout>
+    <ErrorBoundary fallback={"oh no!"}>
+      <Layout>
+        Hellooo
+        <BackgroundStyles>
+          <ScrollHandler>
+            <CanvasAndScene />
+          </ScrollHandler>
+          <ScrollingOverlaySimple />
+          <InfoButton />
+          <SoundButton />
+          <RollTheDieButton />
+          {isInfoOverlayVisible && (
+            <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>
+          )}
+        </BackgroundStyles>
+      </Layout>
+    </ErrorBoundary>
   );
 }
 
