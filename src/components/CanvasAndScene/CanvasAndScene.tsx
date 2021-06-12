@@ -21,6 +21,7 @@ import { useIsZoomed, useStore } from "../store/store";
 import { useFrame, useThree, Canvas } from "@react-three/fiber";
 import { useRollTheDieCannon } from "./SpinningParticle/useRollTheDieCannon";
 import { ErrorBoundary } from "../ErrorBoundary";
+import { CAMERA_POSITION_INITIAL } from "../../utils/constants";
 
 const CONTROLLED = false;
 const Canv = CONTROLLED ? Controls.Canvas : Canvas;
@@ -42,7 +43,7 @@ export default function CanvasAndScene() {
             gl.toneMapping = THREE.ACESFilmicToneMapping;
           }}
           gl={{ antialias: false, alpha: false }}
-          {...{ camera: { fov: 75, position: [0, 0, 15] } }}
+          {...{ camera: { fov: 75, position: CAMERA_POSITION_INITIAL } }}
           style={{ height: windowSize.height, width: windowSize.width }}
         >
           <SpinScene>

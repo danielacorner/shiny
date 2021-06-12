@@ -1,8 +1,9 @@
 import { useBox, useConvexPolyhedron } from "@react-three/cannon";
 import { useEffect, useState } from "react";
-import { useStore } from "../../store/store";
+import { useIsZoomedCamera, useStore } from "../../store/store";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
+import { CAMERA_POSITION_INITIAL } from "../../../utils/constants";
 
 const ZOOM_SPEED = 0.1;
 const ROLL_TIME = 2 * 1000;
@@ -10,6 +11,8 @@ const ROLL_TIME = 2 * 1000;
 export function useRollTheDieCannon() {
   const isRollingDie = useStore((s) => s.isRollingDie);
   const isRollingComplete = useStore((s) => s.isRollingComplete);
+  const isZoomedCamera = useIsZoomedCamera();
+
   const set = useStore((s) => s.set);
   // const [icosahedronPhysicsRef, api] = useConvexPolyhedron(() => ({
   //   mass: 1, // approximate mass using volume of a sphere equation
@@ -50,26 +53,43 @@ export function useRollTheDieCannon() {
 
   // zoom in the camera after we roll
   useFrame(({ camera }) => {
-    if (isRollingDie && isRollingComplete) {
-      const d20Position = icosahedronPhysicsRef.current.position;
-      const CAMERA_POSITION_ZOOMED = {
-        x: d20Position.x,
-        y: d20Position.y,
-        // x: 0,
-        // y: -0,
-        z: -0,
-      };
+    const d20Position = icosahedronPhysicsRef.current.position;
+    const cameraPositionZoomed = {
+      x: d20Position.x,
+      y: d20Position.y,
+      // x: 0,
+      // y: -0,
+      z: -0,
+    };
 
-      // zoom in
-      const deltaX = CAMERA_POSITION_ZOOMED.x - camera.position.x;
-      const x = camera.position.x + deltaX * ZOOM_SPEED;
-      const deltaY = CAMERA_POSITION_ZOOMED.y - camera.position.y;
-      const y = camera.position.y + deltaY * ZOOM_SPEED;
-      const deltaZ = CAMERA_POSITION_ZOOMED.z - camera.position.z;
-      const z = camera.position.z + deltaZ * ZOOM_SPEED;
-      camera.position.set(x, y, z);
+    const targetPosition = isZoomedCamera
+      ? // zoom in
+        cameraPositionZoomed
+      : // zoom out
+        {
+          x: CAMERA_POSITION_INITIAL[0],
+          y: CAMERA_POSITION_INITIAL[1],
+          z: CAMERA_POSITION_INITIAL[2],
+        };
 
-      camera.lookAt(0, 0, -100);
+    const deltaX = targetPosition.x - camera.position.x;
+    const x = camera.position.x + deltaX * ZOOM_SPEED;
+    const deltaY = targetPosition.y - camera.position.y;
+    const y = camera.position.y + deltaY * ZOOM_SPEED;
+    const deltaZ = targetPosition.z - camera.position.z;
+    const z = camera.position.z + deltaZ * ZOOM_SPEED;
+    camera.position.set(x, y, z);
+
+    camera.lookAt(0, 0, -100);
+
+    if (isRollingComplete && !isZoomedCamera) {
+      // move the d20 back to starting position
+      const [pX, pY, pZ] = [
+        d20Position.x * 0.9,
+        d20Position.y * 0.9,
+        d20Position.z * 0.9,
+      ];
+      api.position.set(pX, pY, pZ);
     }
   });
 

@@ -2,6 +2,8 @@ import * as THREE from "three";
 export const INITIAL_ROTATION = { x: 1, y: 2, z: 3 };
 const degToRad = (THREE as any).Math.degToRad;
 
+export const CAMERA_POSITION_INITIAL = [0, 0, 15];
+
 export const STEP11 = { x: 235.2, y: 304.8, z: 152.4 };
 export const STEP11_RAD = Object.fromEntries(
   Object.entries(STEP11).map(([x, degrees]) => [x, degToRad(degrees)])

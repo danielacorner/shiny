@@ -73,3 +73,9 @@ export function useIsSpinning() {
   const isRollingDie = useStore((s) => s.isRollingDie);
   return !isZoomed && !isRollingDie;
 }
+
+export function useIsZoomedCamera() {
+  const isRollingDie = useStore((s) => s.isRollingDie);
+  const isRollingComplete = useStore((s) => s.isRollingComplete);
+  return isRollingDie && isRollingComplete;
+}
