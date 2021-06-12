@@ -288,16 +288,28 @@ function useSpinObjects(
   // manually detect when we just went from isZoomed to !isZoomed
   const [isZoomingOut, setIsZoomingOut] = useState(false);
   const prevIsZoomed = usePrevious(isZoomed);
-  const nextIsZoomingOut = Boolean(prevIsZoomed && !isZoomed);
   useEffect(() => {
-    console.log("🌟🚨 ~ useEffect ~ nextIsZoomingOut", nextIsZoomingOut);
+    let timer = null as number | null;
+    const nextIsZoomingOut = Boolean(prevIsZoomed && !isZoomed);
     if (nextIsZoomingOut) {
-      window.setTimeout(() => {
+      timer = window.setTimeout(() => {
         setIsZoomingOut(false);
       }, 5 * 1000);
       setIsZoomingOut(true);
     }
-  }, [nextIsZoomingOut]);
+    // if we're zooming back in, setIsZoomingOut(false)
+    if (isZoomed) {
+      setIsZoomingOut(false);
+      if (timer) {
+        window.clearTimeout(timer);
+      }
+    }
+    return () => {
+      if (timer) {
+        window.clearTimeout(timer);
+      }
+    };
+  }, [prevIsZoomed, isZoomed]);
 
   // spin the particle
   useFrame(({ clock }) => {
@@ -313,8 +325,19 @@ function useSpinObjects(
     ref2.current.rotation.y =
       ref2.current.rotation.y - Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
 
-    console.log("🌟🚨 ~ useFrame ~ isZoomingOut", isZoomingOut);
+    // ref3 is the d20
+
+    const targetX = Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
+    const targetY =
+      ref3.current.rotation.y + Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
     if (isZoomingOut) {
+      // move in a spring animation from [x,y,z] to the time-based sine curve
+      const deltaX = targetX - ref3.current.rotation.x;
+      ref3.current.rotation.x =
+        ref3.current.rotation.x + deltaX * rotationSpeed;
+      const deltaY = targetY - ref3.current.rotation.y;
+      ref3.current.rotation.y =
+        ref3.current.rotation.y + deltaY * rotationSpeed;
     } else if (isZoomed) {
       // move in a spring animation from [x,y,z] to rotation
       // e.g. 5 -> 2
@@ -329,10 +352,9 @@ function useSpinObjects(
       ref3.current.rotation.z =
         ref3.current.rotation.z + deltaZ * rotationSpeed;
     } else {
-      // move in a spring if returning
-      ref3.current.rotation.x = Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
-      ref3.current.rotation.y =
-        ref3.current.rotation.y + Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
+      // (time-based sine curve)
+      ref3.current.rotation.x = targetX;
+      ref3.current.rotation.y = targetY;
     }
 
     ref4.current.rotation.x = -Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
