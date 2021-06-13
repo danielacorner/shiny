@@ -74,18 +74,13 @@ export function useRollableDieCannon() {
 
   // zoom in the camera after we roll
   useFrame(({ camera }) => {
-    // const d20Position = icosahedronPhysicsRef.current.position;
-    const cameraPositionZoomed = {
-      x: d20Position.current[0],
-      y: d20Position.current[1],
-      // x: 0,
-      // y: -0,
-      z: 0,
-    };
-
     const targetPosition = isZoomedCamera
       ? // zoom in
-        cameraPositionZoomed
+        {
+          x: d20Position.current[0],
+          y: d20Position.current[1],
+          z: d20Position.current[2] + 3,
+        }
       : // zoom out
         {
           x: CAMERA_POSITION_INITIAL[0],
@@ -100,9 +95,10 @@ export function useRollableDieCannon() {
     const deltaZ = targetPosition.z - camera.position.z;
     const z = camera.position.z + deltaZ * ZOOM_SPEED;
 
-    if (isRollingDie) {
+    if (isRollingComplete) {
       camera.position.set(x, y, z);
-      camera.lookAt(0, 0, -1000);
+      camera.lookAt(...d20Position.current);
+      // camera.lookAt(0, 0, -1000);
     }
 
     if (isRollingComplete && (!isZoomedCamera || isZoomed)) {
