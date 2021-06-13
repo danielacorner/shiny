@@ -10,8 +10,6 @@ import {
 } from "./SpinningParticle";
 
 export function useSpinObjects(
-  ref1: React.MutableRefObject<any>,
-  ref2: React.MutableRefObject<any>,
   ref3: React.MutableRefObject<any>,
   ref4: React.MutableRefObject<any>,
   ref5: React.MutableRefObject<any>
@@ -30,16 +28,9 @@ export function useSpinObjects(
   // spin the particle
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
-    if (!ref1.current) {
+    if (!ref3.current) {
       return;
     }
-    ref1.current.rotation.x = -Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
-    ref1.current.rotation.y =
-      ref1.current.rotation.y + Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
-
-    ref2.current.rotation.x = Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
-    ref2.current.rotation.y =
-      ref2.current.rotation.y - Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
 
     // ref3 is the d20
     const targetX = shouldResetRotation

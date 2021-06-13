@@ -42,8 +42,6 @@ export default function SpinningParticle() {
 
   const [rollTheDieCannonRef] = useRollableDieCannon();
 
-  const ref1 = useRef(null as any);
-  const ref2 = useRef(null as any);
   const ref3 = useRef(null as any);
   const ref4 = useRef(null as any);
   const ref5 = useRef(null as any);
@@ -70,7 +68,7 @@ export default function SpinningParticle() {
 
   // const rotation = { x: degToRad(x), y: degToRad(y), z: degToRad(z) };
 
-  useSpinObjects(ref1, ref2, ref3, ref4, ref5);
+  useSpinObjects(ref3, ref4, ref5);
 
   // const opacity = useControl("opacity", { // ? not working
   //   value: 0.78,
@@ -149,24 +147,6 @@ export default function SpinningParticle() {
       onClick={handleZoomIn}
       onPointerDown={handleZoomIn}
     >
-      {/* tetrahedron */}
-      <animated.mesh ref={ref1}>
-        <tetrahedronBufferGeometry args={[scalePct * 0.25, 0]} />
-        <animated.meshPhysicalMaterial
-          {...COMMON_MATERIAL_PROPS}
-          opacity={springProps.opacityTetrahedron}
-          depthTest={true}
-        />
-      </animated.mesh>
-      {/* octahedron */}
-      <mesh ref={ref2}>
-        <octahedronBufferGeometry args={[scalePct * 0.5, 0]} />
-        <animated.meshPhysicalMaterial
-          {...COMMON_MATERIAL_PROPS}
-          opacity={springProps.opacityOctahedron}
-          depthTest={true}
-        />
-      </mesh>
       {/* icosahedron + D20 */}
       {/* rollable */}
       <mesh ref={rollTheDieCannonRef}>
