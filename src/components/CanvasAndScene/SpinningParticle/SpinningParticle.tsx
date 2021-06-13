@@ -103,16 +103,16 @@ export default function SpinningParticle() {
     set({ isSpinning: !isZoomed });
   }, [set, isZoomed]);
 
-  const scale = !mounted ? 0 : !isZoomed ? 1 : 4.5;
-  // const scale = !mounted ? 0 : !isZoomed ? 1 : 4.5;
-  const scaleWireMesh = !isZoomed ? 0.5 : 1;
+  const isRollingDie = useStore((s) => s.isRollingDie);
+
+  const scale = !mounted ? 0 : !isZoomed || isRollingDie ? 1 : 4.5;
+  // const scale = !mounted ? 0 : (!isZoomed || isRollingDie) ? 1 : 4.5;
+  const scaleWireMesh = !isZoomed || isRollingDie ? 0.5 : 1;
 
   const [isWireframe, setIsWireframe] = useState(false);
 
   const springConfigZoomedOut = { mass: 2, tension: 80, friction: 70 };
   const springonfigZoomedIn = { mass: 1, tension: 80, frction: 70 };
-
-  const isRollingDie = useStore((s) => s.isRollingDie);
 
   const isD20Opaque = isRollingDie || isZoomed;
 

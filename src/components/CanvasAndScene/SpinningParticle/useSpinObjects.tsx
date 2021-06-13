@@ -25,7 +25,7 @@ export function useSpinObjects(
   // manually detect when we just went from isZoomed to !isZoomed
   const isZoomingOut = useStore((s) => s.isZoomingOut);
 
-  const shouldResetRotation = isRollingDie || isZoomed;
+  const shouldResetRotation = isRollingDie;
 
   // spin the particle
   useFrame(({ clock }) => {

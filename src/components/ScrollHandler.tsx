@@ -12,6 +12,7 @@ export default function ScrollHandler({ children }) {
   const windowSize = useWindowSize();
   const setScrollY = useStore((s) => s.setScrollY);
   const setScrollTopPct = useStore((s) => s.setScrollTopPct);
+  const isRollingDie = useStore((s) => s.isRollingDie);
 
   const { bindDrag, ref: scrollRef } = useTrackIsScrolling();
 
@@ -67,7 +68,12 @@ export default function ScrollHandler({ children }) {
   return (
     <InvisibleScrollStyles>
       {children}
-      <div className="scrollWrapper" {...bindDrag()} ref={scrollRef}>
+      <div
+        className="scrollWrapper"
+        {...bindDrag()}
+        ref={scrollRef}
+        style={{ pointerEvents: isRollingDie ? "none" : "auto" }}
+      >
         <div className="scrollable" />
       </div>
     </InvisibleScrollStyles>

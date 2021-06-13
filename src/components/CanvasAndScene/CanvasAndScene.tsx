@@ -71,7 +71,7 @@ function Scene() {
   const isRollingDie = useStore((s) => s.isRollingDie);
   return (
     <>
-      {process.env.NODE_ENV === "development" ? (
+      {false && process.env.NODE_ENV === "development" ? (
         <OrbitControls {...({} as any)} />
       ) : !isZoomed ? (
         <DeviceOrientationOrbitControls />

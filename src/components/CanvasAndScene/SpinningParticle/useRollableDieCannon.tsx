@@ -1,6 +1,6 @@
 import { useConvexPolyhedron } from "@react-three/cannon";
 import { useEffect, useMemo, useRef } from "react";
-import { useIsZoomedCamera, useStore } from "../../store/store";
+import { useIsZoomed, useIsZoomedCamera, useStore } from "../../store/store";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { CAMERA_POSITION_INITIAL, ROLL_TIME } from "../../../utils/constants";
@@ -17,6 +17,7 @@ export function useRollableDieCannon() {
   const isRollingDie = useStore((s) => s.isRollingDie);
   const isRollingComplete = useStore((s) => s.isRollingComplete);
   const isZoomedCamera = useIsZoomedCamera();
+  const isZoomed = useIsZoomed();
 
   const set = useStore((s) => s.set);
 
@@ -104,7 +105,7 @@ export function useRollableDieCannon() {
       camera.lookAt(0, 0, -1000);
     }
 
-    if (isRollingComplete && !isZoomedCamera) {
+    if (isRollingComplete && (!isZoomedCamera || isZoomed)) {
       // move the d20 back to starting position
       const [pX, pY, pZ] = [
         d20Position.current[0] * 0.9,
@@ -112,6 +113,9 @@ export function useRollableDieCannon() {
         d20Position.current[2] * 0.9,
       ];
       api.position.set(pX, pY, pZ);
+      api.velocity.set(0, 0, 0);
+      // api.rotation.set(0, 0, 0);
+      api.angularVelocity.set(0, 0, 0);
     }
   });
 
