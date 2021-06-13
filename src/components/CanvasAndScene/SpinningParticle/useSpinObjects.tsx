@@ -48,7 +48,7 @@ export function useSpinObjects(
       const deltaY = targetY - ref3.current.rotation.y;
       ref3.current.rotation.y =
         ref3.current.rotation.y + deltaY * rotationSpeed;
-    } else if (isZoomed) {
+    } else if (isZoomed && !isRollingDie) {
       // move in a spring animation from [x,y,z] to rotation
       // e.g. 5 -> 2
       // 5 = 5 + (2-5)/2

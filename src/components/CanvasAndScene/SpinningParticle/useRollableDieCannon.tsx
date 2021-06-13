@@ -97,8 +97,8 @@ export function useRollableDieCannon() {
 
     if (isRollingComplete) {
       camera.position.set(x, y, z);
-      camera.lookAt(...d20Position.current);
-      // camera.lookAt(0, 0, -1000);
+      // camera.lookAt(...d20Position.current);
+      camera.lookAt(0, 0, -1000);
     }
 
     if (isRollingComplete && (!isZoomedCamera || isZoomed)) {
