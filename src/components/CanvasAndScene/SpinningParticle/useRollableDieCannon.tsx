@@ -7,8 +7,8 @@ import { CAMERA_POSITION_INITIAL, ROLL_TIME } from "../../../utils/constants";
 import { Geometry } from "three-stdlib";
 import { useMount } from "../../../utils/hooks";
 
-const ZOOM_SPEED = 0.1;
-const IMPULSE = 15;
+const ZOOM_SPEED = 0.04;
+const IMPULSE = 10;
 
 const RADIUS = 1;
 const DETAIL = 0;
@@ -41,7 +41,6 @@ export function useRollableDieCannon() {
   // }));
 
   // throw the die
-  const x = Math.random() * IMPULSE;
   useEffect(() => {
     // reset the rotation before & after rolling
     api.rotation.set(0, 0, 0);
@@ -54,7 +53,11 @@ export function useRollableDieCannon() {
         ROLL_TIME
       );
 
-      const impulse = [Math.random() * x - x, Math.random() * x - x, -10];
+      const impulse = [
+        Math.random() * IMPULSE - IMPULSE,
+        Math.random() * IMPULSE - IMPULSE,
+        -10,
+      ];
       const worldPoint = [0, 0, 10];
       api.applyImpulse(impulse, worldPoint);
     }
