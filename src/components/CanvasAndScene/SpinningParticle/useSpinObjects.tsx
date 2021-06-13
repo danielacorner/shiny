@@ -25,6 +25,8 @@ export function useSpinObjects(
   // manually detect when we just went from isZoomed to !isZoomed
   const isZoomingOut = useStore((s) => s.isZoomingOut);
 
+  const shouldResetRotation = isRollingDie || isZoomed;
+
   // spin the particle
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
@@ -40,11 +42,13 @@ export function useSpinObjects(
       ref2.current.rotation.y - Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
 
     // ref3 is the d20
-    const targetX = isRollingDie ? 0 : Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
-    const targetY = isRollingDie
+    const targetX = shouldResetRotation
+      ? 0
+      : Math.sin(time * SPEED_Y) * AMPLITUDE_Y;
+    const targetY = shouldResetRotation
       ? 0
       : ref3.current.rotation.y + Math.cos(time * SPEED_X) * AMPLITUDE_X_INV;
-    const targetZ = isRollingDie ? 0 : ref3.current.rotation.z;
+    const targetZ = shouldResetRotation ? 0 : ref3.current.rotation.z;
     if (isZoomingOut) {
       // move in a spring animation from [x,y,z] to the time-based sine curve
       const deltaX = targetX - ref3.current.rotation.x;
