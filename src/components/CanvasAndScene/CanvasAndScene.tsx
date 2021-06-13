@@ -10,7 +10,7 @@ import {
   Stats,
 } from "@react-three/drei";
 import { Lighting } from "../Lighting/Lighting";
-import { Physics, usePlane, Debug } from "@react-three/cannon";
+import { Physics, Debug } from "@react-three/cannon";
 import { PHYSICS_PROPS } from "../PHYSICS_PROPS";
 import SpinScene from "../SpinScene";
 import SpinningParticle from "./SpinningParticle/SpinningParticle";
@@ -23,6 +23,7 @@ import {
   CAMERA_POSITION_INITIAL,
   INITIAL_CAMERA_POSITION,
 } from "../../utils/constants";
+import Walls from "./Walls";
 
 const CONTROLLED = false;
 const Canv = CONTROLLED ? Controls.Canvas : Canvas;
@@ -49,10 +50,8 @@ export default function CanvasAndScene() {
         >
           <SpinScene>
             <ErrorBoundary component={<Html>❌ Scene</Html>}>
-              <mesh scale={[1, 1, 1]}>
-                <Scene />
-                {isInfoOverlayVisible && <Stats />}
-              </mesh>
+              <Scene />
+              {isInfoOverlayVisible && <Stats />}
             </ErrorBoundary>
           </SpinScene>
           <Lighting />
@@ -72,7 +71,7 @@ function Scene() {
   const isRollingDie = useStore((s) => s.isRollingDie);
   return (
     <>
-      {false && process.env.NODE_ENV === "development" ? (
+      {process.env.NODE_ENV === "development" ? (
         <OrbitControls {...({} as any)} />
       ) : !isZoomed ? (
         <DeviceOrientationOrbitControls />
@@ -90,28 +89,20 @@ function Scene() {
       >
         <Debugger>
           <ErrorBoundary component={<Html>❌ rollTheDieCannonRef</Html>}>
-            <D20AndPlane />
+            <D20AndPlanes />
           </ErrorBoundary>
         </Debugger>
       </Physics>
     </>
   );
 }
-function D20AndPlane() {
-  const [planeRef] = usePlane(() => ({
-    rotation: [0, 0, 0],
-    position: [0, 0, -8],
-    // ...props,
-  }));
-
-  // const icosahedronPhysicsRef = null;
-
+function D20AndPlanes() {
   return (
     <mesh>
       <ErrorBoundary component={<Html>❌ SpinningParticle</Html>}>
         <SpinningParticle />
       </ErrorBoundary>
-      <mesh ref={planeRef} />
+      <Walls />
     </mesh>
   );
 }

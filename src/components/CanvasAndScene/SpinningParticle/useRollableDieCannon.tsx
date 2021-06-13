@@ -8,8 +8,9 @@ import { Geometry } from "three-stdlib";
 import { useMount } from "../../../utils/hooks";
 
 const ZOOM_SPEED = 0.1;
+const IMPULSE = 15;
 
-const RADIUS = 2;
+const RADIUS = 1;
 const DETAIL = 0;
 
 export function useRollableDieCannon() {
@@ -39,7 +40,7 @@ export function useRollableDieCannon() {
   // }));
 
   // throw the die
-  const x = Math.random() * 3;
+  const x = Math.random() * IMPULSE;
   useEffect(() => {
     // reset the rotation before & after rolling
     api.rotation.set(0, 0, 0);
@@ -78,7 +79,7 @@ export function useRollableDieCannon() {
       y: d20Position.current[1],
       // x: 0,
       // y: -0,
-      z: -0,
+      z: 0,
     };
 
     const targetPosition = isZoomedCamera
@@ -98,7 +99,7 @@ export function useRollableDieCannon() {
     const deltaZ = targetPosition.z - camera.position.z;
     const z = camera.position.z + deltaZ * ZOOM_SPEED;
 
-    if (isRollingComplete && isZoomedCamera) {
+    if (isRollingDie) {
       camera.position.set(x, y, z);
       camera.lookAt(0, 0, -1000);
     }

@@ -28,7 +28,7 @@ export function useSpinObjects(
   // spin the particle
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
-    if (!ref1.current || isRollingDie) {
+    if (!ref1.current) {
       return;
     }
     ref1.current.rotation.x = -Math.sin(time * SPEED_Y) * AMPLITUDE_Y;

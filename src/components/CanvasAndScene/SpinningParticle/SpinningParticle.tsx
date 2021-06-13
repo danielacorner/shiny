@@ -103,7 +103,8 @@ export default function SpinningParticle() {
     set({ isSpinning: !isZoomed });
   }, [set, isZoomed]);
 
-  const scale = !mounted ? 0 : !isZoomed ? 2 : 4.5;
+  const scale = !mounted ? 0 : !isZoomed ? 1 : 4.5;
+  // const scale = !mounted ? 0 : !isZoomed ? 1 : 4.5;
   const scaleWireMesh = !isZoomed ? 0.5 : 1;
 
   const [isWireframe, setIsWireframe] = useState(false);
