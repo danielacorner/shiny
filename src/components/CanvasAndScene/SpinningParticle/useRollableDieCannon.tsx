@@ -7,7 +7,7 @@ import { CAMERA_POSITION_INITIAL, ROLL_TIME } from "../../../utils/constants";
 import { Geometry } from "three-stdlib";
 import { useMount } from "../../../utils/hooks";
 
-const ZOOM_SPEED = 0.025;
+const ZOOM_SPEED = 0.028;
 
 const RADIUS = 1;
 const DETAIL = 0;
