@@ -6,7 +6,7 @@ const Walls = () => {
   // can't use useWindowSize -- Plane doesn't cooperate with changing width/height
   const worldWidth = (Math.min(900, window.innerWidth) / 736) * 8;
   // const worldHeight = 8;
-  const worldHeight = (window.innerHeight / 736) * 8;
+  const worldHeight = (Math.min(900, window.innerHeight) / 736) * 8;
 
   const walls = [
     // {/* behind (back wall) */}
