@@ -6,7 +6,7 @@ import { useDetectGPU } from "@react-three/drei";
 import { useSetAnimationStepOnScroll } from "./components/store/useSetAnimationStepOnScroll";
 import { ScrollingOverlaySimple } from "./components/ScrollingOverlay";
 import { InfoButton } from "./components/controls/InfoButton";
-import { SoundButton } from "./components/controls/SoundButton";
+import { AudioSoundButton } from "./components/controls/AudioSoundButton";
 import { RollTheDieButton } from "./components/controls/RollTheDieButton";
 import { useStore } from "./components/store/store";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -28,7 +28,7 @@ export default function App() {
           </ScrollHandler>
           <ScrollingOverlaySimple />
           <InfoButton />
-          <SoundButton />
+          <AudioSoundButton />
           <RollTheDieButton />
           {isInfoOverlayVisible && (
             <div className="gpuInfo">{JSON.stringify(gpuInfo)}</div>

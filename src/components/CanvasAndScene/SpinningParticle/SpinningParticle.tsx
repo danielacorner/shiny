@@ -219,7 +219,7 @@ export default function SpinningParticle() {
         <icosahedronBufferGeometry args={[scalePct * 14, 2]} />
         <meshPhysicalMaterial
           {...COMMON_MATERIAL_PROPS}
-          opacity={isWireframe ? 0.03 : 0.04}
+          opacity={isWireframe ? 0.02 : 0.03}
           wireframe={true}
           depthTest={isZoomed}
         />
