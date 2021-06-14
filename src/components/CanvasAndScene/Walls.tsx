@@ -19,7 +19,7 @@ const Walls = () => {
     // {/* in front (camera-side) */}
     {
       rotation: [0, -1 * Math.PI, 0],
-      position: [0, -0, worldDepth],
+      position: [0, -0, worldDepth / 2],
       width: worldWidth,
       height: worldHeight,
     },
