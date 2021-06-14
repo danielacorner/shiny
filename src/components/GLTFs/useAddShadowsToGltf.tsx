@@ -7,9 +7,6 @@ export function useAddShadowsToGltf(ref) {
         object.castShadow = true;
         object.receiveShadow = true;
       }
-      if ("depthTest" in object) {
-        object.depthTest = true;
-      }
     });
   });
 }

@@ -22,6 +22,7 @@ export function useSyncStoreStateToLS(stateKey: keyof GlobalStateType) {
 type GlobalStateType = {
   isZoomed: boolean;
   isRollingDie: boolean;
+  impulseAmount: number;
   isRollingComplete: boolean;
   isZoomingOut: boolean;
   isSpinning: boolean;
@@ -44,6 +45,7 @@ type GlobalStateType = {
 export const useStore = create<GlobalStateType>(
   (set): GlobalStateType => ({
     isRollingDie: false,
+    impulseAmount: 10,
     isRollingComplete: false,
     isZoomingOut: false,
     isSpinning: false,

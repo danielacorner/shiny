@@ -8,7 +8,6 @@ import { Geometry } from "three-stdlib";
 import { useMount } from "../../../utils/hooks";
 
 const ZOOM_SPEED = 0.025;
-const IMPULSE = 10;
 
 const RADIUS = 1;
 const DETAIL = 0;
@@ -16,6 +15,7 @@ const DETAIL = 0;
 export function useRollableDieCannon() {
   const isRollingDie = useStore((s) => s.isRollingDie);
   const isRollingComplete = useStore((s) => s.isRollingComplete);
+  const impulseAmount = useStore((s) => s.impulseAmount);
   const isZoomedCamera = useIsZoomedCamera();
   const isZoomed = useIsZoomed();
 
@@ -54,8 +54,8 @@ export function useRollableDieCannon() {
       );
 
       const impulse = [
-        Math.random() * IMPULSE - IMPULSE,
-        Math.random() * IMPULSE - IMPULSE,
+        Math.random() * impulseAmount - impulseAmount,
+        Math.random() * impulseAmount - impulseAmount,
         -10,
       ];
       const worldPoint = [0, 0, 10];
