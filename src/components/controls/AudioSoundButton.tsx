@@ -4,6 +4,7 @@ import ReactPlayer from "react-player";
 import styled from "styled-components/macro";
 import { useState } from "react";
 import { useLocalStorageState } from "../../utils/hooks";
+import { getTimeOfDay } from "../../utils/timeUtils";
 
 /** show or hide the info overlay */
 export function AudioSoundButton() {
@@ -14,12 +15,7 @@ export function AudioSoundButton() {
   );
   const [isHovered, setIsHovered] = useState(false);
 
-  const date = new Date();
-  const hourOfDay = date.getHours();
-  const isDaytime = hourOfDay > 6 && hourOfDay < 18;
-  const isRaining = date.getDate() % 3 === 0;
-  const isMonday = date.getDay() === 1;
-  const isFriday = date.getDay() === 5;
+  const { isDaytime, isMonday, isRaining, isFriday } = getTimeOfDay();
   const music = isDaytime
     ? isMonday
       ? {
@@ -56,7 +52,10 @@ export function AudioSoundButton() {
         onMouseOver={() => setIsHovered(true)}
       >
         <Tooltip title={isAudioPlaying ? "mute" : "unmute"}>
-          <IconButton onClick={() => setIsAudioPlaying(!isAudioPlaying)}>
+          <IconButton
+            onClick={() => setIsAudioPlaying(!isAudioPlaying)}
+            style={{ color: `hsla(0,0%,${isDaytime ? 0 : 100}%,50%)` }}
+          >
             {isAudioPlaying ? <VolumeUp /> : <VolumeMute />}
           </IconButton>
         </Tooltip>

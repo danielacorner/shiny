@@ -4,6 +4,7 @@ import { IconButton } from "@material-ui/core";
 import styled from "styled-components/macro";
 import { useLocalStorageState } from "../../utils/hooks";
 import { useEffect } from "react";
+import { getTimeOfDay } from "../../utils/timeUtils";
 
 /** show or hide the info overlay */
 export function InfoButton() {
@@ -16,12 +17,15 @@ export function InfoButton() {
     set({ isInfoOverlayVisible: isInfoOverlayVisibleLS });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInfoOverlayVisibleLS]);
+
+  const { isDaytime } = getTimeOfDay();
   return (
     <InfoButtonStyles>
       <IconButton
         onClick={() => {
           setIsInfoOverlayVisibleLS(!isInfoOverlayVisibleLS);
         }}
+        style={{ color: `hsla(0,0%,${isDaytime ? 0 : 100}%,50%)` }}
       >
         <Info />
       </IconButton>
