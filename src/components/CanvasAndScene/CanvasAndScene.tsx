@@ -1,5 +1,5 @@
-import React, { Suspense, useState } from "react";
-import { useWindowSize, useInterval } from "../../utils/hooks";
+import React, { Suspense } from "react";
+import { useWindowSize } from "../../utils/hooks";
 import * as THREE from "three";
 import { Html } from "@react-three/drei";
 import {
@@ -24,6 +24,7 @@ import {
   INITIAL_CAMERA_POSITION,
 } from "../../utils/constants";
 import Walls from "./Walls";
+import { useTurbidityByTimeOfDay } from "./useTurbidityByTimeOfDay";
 
 const CONTROLLED = false;
 const Canv = CONTROLLED ? Controls.Canvas : Canvas;
@@ -51,7 +52,7 @@ export default function CanvasAndScene() {
           <SpinScene>
             <ErrorBoundary component={<Html>❌ Scene</Html>}>
               <Scene />
-              {isInfoOverlayVisible && <Stats />}
+              {isInfoOverlayVisible && <Stats className="fpsStats" />}
             </ErrorBoundary>
           </SpinScene>
           <Lighting />
@@ -65,7 +66,7 @@ export default function CanvasAndScene() {
 }
 
 function Scene() {
-  const turbidity = useGetTurbidityByTimeOfDay();
+  const turbidity = useTurbidityByTimeOfDay();
   const isZoomed = useIsZoomed();
   useResetCameraWhenZoomed();
   const isRollingDie = useStore((s) => s.isRollingDie);
@@ -137,40 +138,8 @@ function useResetCameraWhenZoomed() {
   });
 }
 
-const SECONDS_IN_DAY = 24 * 60 * 60;
-const TURBIDITY = { max: -50, min: 100 };
-
-function useGetTurbidityByTimeOfDay() {
-  const date = new Date();
-  const [hours, minutes, seconds] = [
-    date.getHours(),
-    date.getMinutes(),
-    date.getSeconds(),
-  ];
-  const secondOfDay = (hours * 60 + minutes) * 60 + seconds;
-  // maximum = 12pm --> brightness = time before or after 12pm
-  const secondsAtNoon = SECONDS_IN_DAY / 2;
-  const secondsBeforeOrSinceNoon = Math.abs(secondOfDay - secondsAtNoon);
-  const brightnessPct =
-    (SECONDS_IN_DAY - secondsBeforeOrSinceNoon) / SECONDS_IN_DAY;
-
-  const [turbidity, setTurbidity] = useState(
-    TURBIDITY.min + brightnessPct * (TURBIDITY.max - TURBIDITY.min)
-  );
-
-  // update every 5min
-  useInterval({
-    callback: () => {
-      setTurbidity(
-        TURBIDITY.min + brightnessPct * (TURBIDITY.max - TURBIDITY.min)
-      );
-    },
-    interval: 5 * 60 * 1000,
-    immediate: false,
-  });
-
-  return turbidity;
-}
+export const SECONDS_IN_DAY = 24 * 60 * 60;
+export const TURBIDITY = { max: -50, min: 100 };
 
 function Debugger({ children }) {
   return process.env.NODE_ENV === "development" ? (

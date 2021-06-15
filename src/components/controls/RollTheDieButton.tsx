@@ -73,12 +73,17 @@ export function RollTheDieButton() {
   );
 }
 const RollTheDieButtonStyles = styled.div`
+  height: 48px;
+  width: 48px;
+  position: relative;
   .MuiButtonBase-root {
     color: hsla(0, 100%, 100%, 0.5);
-    position: fixed;
-    top: 0;
-    right: 0;
   }
   .btnRoll {
+  }
+  .btnReset {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 `;

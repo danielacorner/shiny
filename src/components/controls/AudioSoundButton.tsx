@@ -2,7 +2,6 @@ import { VolumeUp, VolumeMute } from "@material-ui/icons";
 import { IconButton, Tooltip } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import styled from "styled-components/macro";
-import { useState } from "react";
 import { useLocalStorageState } from "../../utils/hooks";
 import { getTimeOfDay } from "../../utils/timeUtils";
 
@@ -13,7 +12,6 @@ export function AudioSoundButton() {
     "isAudioPlaying",
     false // As of Chrome 66, videos must be muted in order to play automatically https://www.npmjs.com/package/react-player
   );
-  const [isHovered, setIsHovered] = useState(false);
 
   const { isDaytime, isMonday, isRaining, isFriday } = getTimeOfDay();
   const music = isDaytime
@@ -47,26 +45,20 @@ export function AudioSoundButton() {
       };
   return (
     <>
-      <SoundButtonStyles
-        onMouseOut={() => setIsHovered(false)}
-        onMouseOver={() => setIsHovered(true)}
-      >
-        <Tooltip title={isAudioPlaying ? "mute" : "unmute"}>
-          <IconButton
-            onClick={() => setIsAudioPlaying(!isAudioPlaying)}
-            style={{ color: `hsla(0,0%,${isDaytime ? 0 : 100}%,50%)` }}
-          >
+      <SoundButtonStyles>
+        <Tooltip title={isAudioPlaying ? "mute 🔈" : "unmute 🔊"}>
+          <IconButton onClick={() => setIsAudioPlaying(!isAudioPlaying)}>
             {isAudioPlaying ? <VolumeUp /> : <VolumeMute />}
           </IconButton>
         </Tooltip>
-        <div className="soundInfo" style={{ opacity: isHovered ? 0.5 : 0 }}>
+        <div className="soundInfo">
           <a href={music.href} target="_blank" rel="noopener noreferrer">
             {music.title}
           </a>
         </div>
       </SoundButtonStyles>
       <ReactPlayer
-        style={{ visibility: "hidden" }}
+        style={{ visibility: "hidden", position: "fixed" }}
         playing={isAudioPlaying}
         url="https://www.youtube.com/watch?v=aK4JSwhdcdE"
       />
@@ -74,6 +66,11 @@ export function AudioSoundButton() {
   );
 }
 const SoundButtonStyles = styled.div`
+  height: 48px;
+  width: 48px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
   .MuiButtonBase-root {
     color: hsla(0, 100%, 100%, 0.5);
   }
@@ -81,11 +78,11 @@ const SoundButtonStyles = styled.div`
     a {
       color: white;
     }
-    position: fixed;
-    bottom: 16px;
-    left: 48px;
+    opacity: 0;
   }
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  &:hover {
+    .soundInfo {
+      opacity: 0.5;
+    }
+  }
 `;

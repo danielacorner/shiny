@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.fpsStats {
+  left: 72px !important;
+  top: 12px !important;
+}
