@@ -4,6 +4,7 @@ import styled from "styled-components/macro";
 import { HEIGHT_MULTIPLIER } from "./ScrollHandler";
 import { animated, useSpring } from "@react-spring/web";
 import { useWindowSize } from "../utils/hooks";
+import { ScrollDownIndicator } from "../ScrollDownIndicator";
 const WIDTH_PX = 100;
 
 export function ScrollingOverlaySimple() {
@@ -21,29 +22,34 @@ export function ScrollingOverlaySimple() {
     transform: `translateY(${translateY}px)`,
   });
   return (
-    <SOStyles {...{ numberIndicatorHeight }}>
-      <animated.div className="animated" style={spring}>
-        {[...Array(NUM_ANIMATION_STEPS)].map((_, idx) => {
-          const numDisplay = NUM_ANIMATION_STEPS - idx - 1;
-          return (
-            <div
-              className="numIndicator"
-              style={{
-                transform: `translate(${0}px,${idx * numberIndicatorHeight}px)`,
-              }}
-              key={idx}
-            >
-              {1 > numDisplay || numDisplay > 20 ? null : numDisplay}
+    <>
+      <ScrollDownIndicator {...{ translateY }} />
+      <SOStyles {...{ numberIndicatorHeight }}>
+        <animated.div className="animated" style={spring}>
+          {[...Array(NUM_ANIMATION_STEPS)].map((_, idx) => {
+            const numDisplay = NUM_ANIMATION_STEPS - idx - 1;
+            return (
               <div
-                className={`tickWrapper${idx === 0 ? " first" : ""}${
-                  idx === NUM_ANIMATION_STEPS - 1 ? " last" : ""
-                }`}
-              />
-            </div>
-          );
-        })}
-      </animated.div>
-    </SOStyles>
+                className="numIndicator"
+                style={{
+                  transform: `translate(${0}px,${
+                    idx * numberIndicatorHeight
+                  }px)`,
+                }}
+                key={idx}
+              >
+                {1 > numDisplay || numDisplay > 20 ? null : numDisplay}
+                <div
+                  className={`tickWrapper${idx === 0 ? " first" : ""}${
+                    idx === NUM_ANIMATION_STEPS - 1 ? " last" : ""
+                  }`}
+                />
+              </div>
+            );
+          })}
+        </animated.div>
+      </SOStyles>
+    </>
   );
 }
 const SOStyles = styled.div`

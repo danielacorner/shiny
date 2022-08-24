@@ -10,9 +10,11 @@ export function CornerButtons() {
 
   return (
     <CornerButtonsStyles {...{ isDaytime }}>
-      <div className="btn btnInfoWrapper bottom left">
-        <InfoButton />
-      </div>
+      {process.env.NODE_ENV === "development" && (
+        <div className="btn btnInfoWrapper bottom left">
+          <InfoButton />
+        </div>
+      )}
       <div className="btn btnGithubWrapper bottom right">
         <GithubButton />
       </div>

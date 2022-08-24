@@ -1,28 +1,37 @@
 import styled from "styled-components/macro";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { KeyboardArrowDown } from "@material-ui/icons";
-import { useEventListener } from "./utils/hooks";
+import { useGesture } from "@use-gesture/react";
 
 /** after a couple seconds, hint that user should scroll down */
-export function ScrollDownIndicator() {
+export function ScrollDownIndicator({ translateY }) {
   const [status, setStatus] = useState<
-    "initial-hidden" | "show" | "scrolled-hidden"
-  >("initial-hidden");
+    "hidden:initial" | "show" | "hidden:scrolled"
+  >("hidden:initial");
   useEffect(() => {
     const timeout = setTimeout(() => {
       // reveal if we haven't scrolled yet
-      setStatus((p) => (p === "initial-hidden" ? "show" : p));
-    }, 4000);
+      setStatus((p) => (p === "hidden:initial" ? "show" : p));
+    }, 2 * 1000);
     return () => clearTimeout(timeout);
   }, [setStatus]);
 
-  // once the user has scrolled, hide the indicator
-  useEventListener("scroll", () => {
-    setStatus("scrolled-hidden");
-  });
-  useEventListener("wheel", () => {
-    setStatus("scrolled-hidden");
-  });
+  // once the user has scrolled down past "20" to at least "15", hide the indicator
+  const handleScroll = useCallback(() => {
+    if (translateY < -window.innerHeight) {
+      setStatus("hidden:scrolled");
+    }
+  }, [translateY]);
+  /* const bind = */ useGesture(
+    {
+      // no need for state since we're hacking translateY from props
+      onDrag: handleScroll,
+      onScroll: handleScroll,
+      onWheel: handleScroll,
+    },
+    // https://use-gesture.netlify.app/docs/options/#structure-of-the-config-object
+    { target: window, window }
+  );
 
   return (
     <ScrollDownIndicatorStyles {...{ status }}>
@@ -35,16 +44,18 @@ const ScrollDownIndicatorStyles = styled.div`
   opacity: ${(p) => (p.status === "show" ? 0.6 : 0)};
   transition: opacity 0.5s;
   position: fixed;
-  bottom: 0;
+  bottom: 72px;
   left: 0;
   right: 0;
   height: 30px;
   display: flex;
   justify-content: center;
-  transform: scale(1.8);
   /* animate up and down */
   .MuiSvgIcon-root {
+    font-size: 48px;
     animation: bounce 0.8s infinite alternate;
+    color: white;
+    filter: drop-shadow(0px -2px 9px white) drop-shadow(0px -2px 9px white);
   }
 
   @keyframes bounce {

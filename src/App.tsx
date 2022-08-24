@@ -6,7 +6,6 @@ import { ScrollingOverlaySimple } from "./components/ScrollingOverlay";
 import ErrorBoundary from "./components/ErrorBoundary";
 import useDetectIsZoomingOut from "./components/CanvasAndScene/useDetectIsZoomingOut";
 import { CornerButtons } from "./CornerButtons";
-import { ScrollDownIndicator } from "./ScrollDownIndicator";
 
 export default function App() {
   useSetAnimationStepOnScroll();
@@ -20,7 +19,6 @@ export default function App() {
         </ScrollHandler>
         <ScrollingOverlaySimple />
         <CornerButtons />
-        <ScrollDownIndicator />
       </Layout>
     </ErrorBoundary>
   );
